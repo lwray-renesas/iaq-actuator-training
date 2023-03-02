@@ -1,0 +1,346 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<!-- Useful for tablet and mobile based browsing-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Title of the page (not necessarily the lab) - for reference only, not displayed on the page-->
+	<title>Project Configuration</title>
+	<!-- CSS template stylesheet must be linked here-->
+	<link href="css/renesas_layout_style.css" rel="stylesheet" type="text/css">
+	<!-- Javascript based lab templating helper must be placed here-->
+	<script type="text/javascript" src="js/lab-templater.js"></script>
+</head>
+
+<body>
+	<!-- Populate the page header (banner, title & navigation menu)-->
+	<script>lab_templater.Generate_header();</script>
+
+	<!-- Begin the main content of the page-->
+	<div class="main-content">
+
+		<!-- Page/Section Summary & Description-->
+		<summary>2. Project Configuration</summary>
+		<p>Here we will guide you through configuring a device &amp; it's peripherals on the RL78/G23 Indoor Air Sensor
+			Board.<br>
+			For more information on the smart configurator please consult the e<sup>2</sup>studio users manual and
+			<a target="_blank"
+				href="https://www.renesas.com/us/en/document/man/smart-configurator-users-manual-rl78-api-reference">Smart
+				Configurator User Manual (RL78 API Reference)</a>.
+		</p>
+
+		<!-- Start adding "details" sections for lab steps-->
+		<details open>
+			<summary>2.1 Clocks &amp; Supply</summary>
+			<p>Navigate to the Clocks Tab &amp; perform the following:</p>
+			<ol>
+				<li>Set the <b>Operating mode</b> to <i>High-speed main mode 1.8(V)~5.5(V)</i><br>
+				This sets the operating mode/voltage of the device used for things like flash programming & in other back end operations of the smart configurator.</li>
+				<li>Set the <b>EVDD setting</b> to <i>1.8 V &le; EVDD 5.5 &le; V</i><br>
+				This sets the operating voltage of EVDD, as above.</li>
+				<li>Enable the low-speed on-chip oscillator as the source clock for fSXP (sub-system clock)
+				and disable XT1.<br>
+				This uses the LOCO as the fSXP - a crystal is not fitted on this board - therefore it cannot be used.</li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/clocks.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.2 System</summary>
+			<p>Navigate to the System Tab &amp; set the <b>On-chip debug operation setting</b> to <i>Use emulator</i>
+				&amp; <b>Emulator setting</b> to <i>E2 Lite</i>.<br>
+				Finally disable the use of the trace function by setting <b>Trace function setting</b> to
+				<i>Unused</i>.<br>
+				Enabling trace function consumes RAM unncessarily as we will not be using the trace function in this
+				project.</p>
+			<img class="modal-thumbnails" src="img/img_lab/system.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.3 PCLBUZ1</summary>
+			<p>Navigate to the Components Tab.<br>
+				This section is where the "magic" happens. The peripheral functions &amp; middlewares can be included,
+				removed and configured from this single location.<br>
+				The process outlined here for adding and configuring the simple component - PCLBUZ1, the clock
+				output/buzzer - is the same one used for <b>all</b> components.<br>
+				It is in the configuration of the peripherals after adding them when the process/layout between the
+				perihperals will differ.
+			</p>
+			<ol>
+				<li>First click the add components button</li>
+				<li>Here you will be presented with the <b>Software Component Selection</b> dialog - you can use the
+					filters along the top or simply scroll to find the component of interest.<br>
+					We will select the <i>Clock Output /Buzzer Output Controller</i> component</li>
+				<li>Click <b>Next &gt;</b></li>
+				<li>This presents you with the <b>Resource Selection</b> dialog - this allows you to select a specific
+					instance of a peripheral.
+					For example where there are multiple clock outputs, we can chose which one we would like to include
+					and thus configure.<br>
+					This is done using the <b>Resource</b> dropdown - please select <i>PCLBUZ1</i> as the resource and
+					Click <b>Finish</b></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/addpclbuz1.gif" alt="">
+			<p>Now we enter the configuration stage of the process - the PCLBUZ1 component was selected first as it is
+				one of the simplest components to configure.<br>
+				In the configuration window after selecting the component you will see only a single drop-down to select
+				the output clock -
+				use this drop down to select <i>fSXP/2^6</i>.<br>
+				We will use this component, in conjunction with the DTC and an interval timer, to drive the on board
+				buzzer circuit.
+			</p>
+			<img class="modal-thumbnails" src="img/img_lab/configurepclbuz1.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.4 SPI</summary>
+			<p>Now using the above mechanism, do the following to include the SPI component which controls/communicates
+				with the display:</p>
+			<ol>
+				<li>Add the <i>SPI (CSI) Communication</i> component</li>
+				<li><b>Operation:</b> <i>Transmission</i></li>
+				<li><b>Resource:</b> <i>CSI</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/addspi.gif" alt="">
+			<p>Make the following changes to the configuration:</p>
+			<ol>
+				<li><b>Transfer direction setting:</b> <i>MSB</i></li>
+				<li><b>Specification of data timing:</b> <i>Type 4</i></li>
+				<li><b>Baudrate:</b> <i>8000000</i></li>
+				<li><b>Callback function setting:</b> <i>Transmission end - "unchecked"</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/configurespi.gif" alt="">
+			<p><i>Note:</i> The reason the transmission end callback is disabled is because we will be using the SPI in
+				polling mode.
+				When operating at speeds of 1Mbps and above the latency involved with servicing interrupts to send
+				multiple bytes
+				of data concurrently (even when used in continuous mode) results in transmissions being completed
+				<b>before</b>
+				the tx end ISR has finished processing - resulting in subsequent tx end interrupts being missed - this
+				is inherently due to the limited CPU speed of the RL78.
+				i.e. a CPU speed of 32MHz and baudrate of 1Mbps allows for only 32 clock cycles between transmitting
+				bytes and even worse for a baudrate of 8Mbps leaving only 4
+				clock cycles between transmitted bytes.<br>
+				Therefore the trade off is to use the SPI in blocking/polling mode instead of interrupt mode to enable
+				writing to the display with minimal latency.
+			</p>
+		</details>
+
+		<details>
+			<summary>2.5 Ports</summary>
+			<p>The <b>Ports</b> component controls the GPIO ports for things like LED control and display I/O, please do
+				the following:</p>
+			<ol>
+				<li>Add the <i>Ports</i> component</li>
+				<li><b>Resource:</b> <i>PORT</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/addports.gif" alt="">
+			<p>Make the following changes to the configuration:</p>
+			<ol>
+				<li><b>Port selection tab:</b> Check the following boxes; <i>PORT1</i>, <i>PORT6</i>, <i>PORT7</i>,
+					<i>PORT14</i></li>
+				<li><b>PORT1 tab:</b> Set the following to <b>Output current</b> &amp; <b>Hi-Z initial output</b>;
+					<i>P16</i>, <i>P17</i><br>
+					These are the LED control pins.</li>
+				<li><b>PORT1 tab:</b> Set the following to <b>Output</b> &amp; <b>initial output 1</b>; <i>P13</i><br>
+					This is the display CS pin.</li>
+				<li><b>PORT6 tab:</b> Set the following to <b>Output current</b> &amp; <b>Hi-Z initial output</b>;
+					<i>P62</i><br>
+					This is the display backlight.</li>
+				<li><b>PORT7 tab:</b> Set the following to <b>Output</b> &amp; <b>initial output 1</b>; <i>P73</i><br>
+					This is the display RESET pin.</li>
+				<li><b>PORT14 tab:</b> Set the following to <b>Output</b> &amp; <b>initial output 1</b>; <i>P146</i><br>
+					This is the display D/C pin.</li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/configureports.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.6 DTC</summary>
+			<p>The <b>DTC</b> component performs data transfers independent of the CPU, in this application we will use
+				the DTC to automatically transfer different buzzer drive frequencies into the clock output control
+				register (CKS1) to generate a tone without CPU
+				intervention. We will also use an interval timer to time the transfers, this will be added next. For now
+				please perform the following:
+			</p>
+			<ol>
+				<li>Add the <i>Data Transfer Controller</i> component</li>
+				<li><b>Resource:</b> <i>DTC</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/adddtc.gif" alt="">
+			<p>Make the following changes to the configuration:</p>
+			<ol>
+				<li><b>Activation source setting:</b> Enable <i>Control data0 (DTCD0)</i> &amp; set the <i>Activation
+						source (DTCD0)</i> to
+					<b>End of channel 6 of timer array unit 0 count or capture</b>
+				</li>
+				<li>Scroll down to <b>DTC data setting:</b> &amp; in the <i>DTCD0</i> tab make the following settings:
+					<ol>
+						<li><b>Transfer mode setting:</b> <i>Normal mode</i>.<br>
+							Meaning after the DTC transfer sequence has completed the
+							original interrupt signals ISR fires and DTC trnsfers become disabled until re-enabling.
+						</li>
+						<li><b>Transfer data size setting:</b> <i>8 bits</i>.<br>
+							The width of the destination register CKS1.</li>
+						<li><b>Transfer source address:</b> <i>0x0000</i> &amp; <i>Address incremented</i>.<br>
+							The source of the transfer will be
+							set dynamically and by incrementing the source address on transfer completion we can
+							transfer sequences of data
+							(i.e. for our tone generation).</li>
+						<li><b>Transfer destination address:</b> <i>0xFFA6</i> &amp; <i>Address fixed</i><br>
+							The destination register will never change.</li>
+						<li><b>Transfer count:</b> <i>9</i>.<br>
+							The number of "notes" arbitrarily selected for our tones.</li>
+						<li><b>Transfer block size:</b><i>1</i><br>
+							We only one to transfer 1x 8bit data every transfer trigger.</li>
+					</ol>
+				</li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/configuredtc.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.7 TAU06</summary>
+			<p>The final component in the automatic tone generation is an interval timer to trigger the data transfers
+				into the clock output/buzzer register.<br>
+				Please do the following:
+			</p>
+			<ol>
+				<li>Add the <i>Interval Timer</i> component</li>
+				<li><b>Operation:</b> <i>16 bit count mode</i></li>
+				<li><b>Resource:</b> <i>TAU0_6</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/addtau06.gif" alt="">
+			<p>Make the following changes to the configuration:</p>
+			<ol>
+				<li><b>Operation clock:</b> <i>CK00</i></li>
+				<li><b>Clock source:</b> <i>fCLK/2^15</i></li>
+				<li><b>Interval value (16 bits):</b> <i>65 ms</i></li>
+				<li><b>Generates INTTM06 when counting is started:</b> <i>Unchecked</i></li>
+				<li><b>End of timer channel 6 count, generate an interrupt (INTTM06):</b> <i>Checked</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/configuretau06.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.8 TAU04</summary>
+			<p>The display driver require a delay functions with ms resolution for performing certain operations such as
+				resets/sleeps &amp; wakeups.<br>
+				We will use TAU04 interval timer to provide this, so please do the following:
+			</p>
+			<ol>
+				<li>Add the <i>Interval Timer</i> component</li>
+				<li><b>Operation:</b> <i>16 bit count mode</i></li>
+				<li><b>Resource:</b> <i>TAU0_4</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/addtau04.gif" alt="">
+			<p>Make the following changes to the configuration:</p>
+			<ol>
+				<li><b>Operation clock:</b> <i>CK01</i></li>
+				<li><b>Clock source:</b> <i>fCLK/2^14</i></li>
+				<li><b>Interval value (16 bits):</b> <i>1 count</i></li>
+				<li><b>Generates INTTM04 when counting is started:</b> <i>Unchecked</i></li>
+				<li><b>End of timer channel 4 count, generate an interrupt (INTTM04):</b> <i>Unchecked</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/configuretau04.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.9 TAU03</summary>
+			<p>The rotary encoder has mounted a N/O SPST switch. We have connected this switch to the TI03 to se the
+				delay counter function
+				to both debounce the button &amp; allow long press detection. Though in this lab we won't be performing
+				long press detection
+				we will use the delay counter to debounce the switch.<br>
+				Please do the following:
+			</p>
+			<ol>
+				<li>Add the <i>Delay Counter</i> component</li>
+				<li><b>Resource:</b> <i>TAU0_3</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/addtau03.gif" alt="">
+			<p>Make the following changes to the configuration:</p>
+			<ol>
+				<li><b>Operation clock:</b> <i>CK01</i></li>
+				<li><b>Clock source:</b> <i>fCLK/2^14</i></li>
+				<li><b>Operation mode setting:</b> <i>16 bits</i></li>
+				<li><b>Enable using noise filter of TI03 pin input signal:</b> <i>Checked</i></li>
+				<li><b>External event edge select (TI03):</b> <i>Falling edge</i></li>
+				<li><b>Delay time:</b> <i>100 ms</i></li>
+				<li><b>The start trigger under count is effective:</b> <i>Unchecked</i><br>
+					This performs the debounce implicitly.</li>
+				<li><b>End of timer channel 3 count, generate an interrupt (INTTM03):</b> <i>Checked</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/configuretau03.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.10 TAU01</summary>
+			<p>To perform the rotary decoding we use external event counters in the timer channels connected to the
+				logic circuit created in the ELCL.
+				The event counters accept pulses which come from the ELCL and use depending on the channel receiving the
+				pulse we can act on
+				clockwise or anti-clockwise rotation.<br>
+				The circuit for this is shown below and TAU01 can be seen to be the anti-clockwise event counter.
+			</p>
+			<img class="modal-thumbnails" src="img/img_lab/rotarydecoding1.png" alt="">
+			<p>Please do the following:</p>
+			<ol>
+				<li>Add the <i>External Event Counter</i> component</li>
+				<li><b>Resource:</b> <i>TAU0_1</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/addtau01.gif" alt="">
+			<p>Make the following changes to the configuration:</p>
+			<ol>
+				<li><b>Operation clock:</b> <i>CK01</i></li>
+				<li><b>Clock source:</b> <i>fCLK/2^14</i></li>
+				<li><b>Input source setting:</b> <i>ELCL</i></li>
+				<li><b>Operation mode setting:</b> <i>16 bits</i></li>
+				<li><b>External event edge select (TI01):</b> <i>Rising edge</i></li>
+				<li><b>Count value:</b> <i>2</i></li>
+				<li><b>End of timer channel 1 count, generate an interrupt (INTTM01):</b> <i>Checked</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/configuretau01.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.11 TAU00</summary>
+			<p>Now we add the second channel (clockwise event counter) for rotary decoding.<br>
+				Please do the following:
+			</p>
+			<ol>
+				<li>Add the <i>External Event Counter</i> component</li>
+				<li><b>Resource:</b> <i>TAU0_0</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/addtau00.gif" alt="">
+			<p>Make the following changes to the configuration:</p>
+			<ol>
+				<li><b>Operation clock:</b> <i>CK01</i></li>
+				<li><b>Clock source:</b> <i>fCLK/2^14</i></li>
+				<li><b>Input source setting:</b> <i>ELCL</i></li>
+				<li><b>Operation mode setting:</b> <i>16 bits</i></li>
+				<li><b>External event edge select (TI00):</b> <i>Rising edge</i></li>
+				<li><b>Count value:</b> <i>2</i></li>
+				<li><b>End of timer channel 0 count, generate an interrupt (INTTM00):</b> <i>Checked</i></li>
+			</ol>
+			<img class="modal-thumbnails" src="img/img_lab/configuretau00.gif" alt="">
+		</details>
+
+		<details>
+			<summary>2.12 Generate Code</summary>
+			<p>Now click Generate Code.</p>
+			<img class="modal-thumbnails" src="img/img_lab/generatecode.gif" alt="">
+			<p>What happens here is the src/smc_gen folder is populated with code reflecting the
+				settings made in the smart configurator.
+			</p>
+		</details>
+
+		<!-- Prepare the pages modal images-->
+		<script>lab_templater.Prepare_modal();</script>
+
+		<!-- Button for going to the next page-->
+		<script>lab_templater.Generate_next_page_button("Next...");</script>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,727 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<!-- Useful for tablet and mobile based browsing-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Title of the page (not necessarily the lab) - for reference only, not displayed on the page-->
+	<title>Source Code</title>
+	<!-- CSS template stylesheet must be linked here-->
+	<link href="css/renesas_layout_style.css" rel="stylesheet" type="text/css">
+	<!-- Javascript based lab templating helper must be placed here-->
+	<script type="text/javascript" src="js/lab-templater.js"></script>
+
+	<!-- Addition of code highlighting Stylesheet & Script-->
+	<link rel="stylesheet" href="js/highlight/styles/atom-one-light.min.css">
+	<script type="text/javascript" src="js/highlight/highlight.min.js"></script>
+	<script>hljs.highlightAll();</script>
+</head>
+
+<body>
+	<!-- Populate the page header (banner, title & navigation menu)-->
+	<script>lab_templater.Generate_header();</script>
+
+	<!-- Begin the main content of the page-->
+	<div class="main-content">
+
+		<!-- Page/Section Summary & Description-->
+		<summary>3. Source Code</summary>
+		<p>Here we will guide you through both inclusion and understanding of the code for this project. The aim is to
+			give an understanding of how to use smart configurator generated code, the e² studio build settings &amp;
+			finally what the lab code does.
+		</p>
+
+		<!-- Start adding "details" sections for lab steps-->
+		<details open>
+			<summary>3.1 Pull In The Free Code</summary>
+			<p>First we have to pull in the free code provided for this lab that is the ELCL library &amp; the display
+				drivers. We call this free code as it serves a fixed purpose and is only here to facilitate the
+				training. It is not the subject of the training - the ELCL code gives us some API we can use to
+				manipualte the ELCL in a more intuitive way than direct register manipulations &amp; the display drivers
+				allow us to represent data on the display.<br>
+				Please copy the folders "display" &amp; "elcl" from this lab's collateral/repository into the "src"
+				folder
+				in your e² studio project.
+			</p>
+			<img class="modal-thumbnails" src="img/img_lab/copyfreecode.gif" alt="">
+		</details>
+
+		<details>
+			<summary>3.2 Setup Include Paths</summary>
+			<p>Now we must setup the compilers include paths so it can "see" the code we have pulled in. Build options
+				such as optimisations, compiler lookup paths, linker settings etc. can be found in the project settings:
+				<b>[Right-Click] Project &rarr; Properties &rarr; C/C++ Build &rarr; Settings</b><br>
+				From here we are particularly interested in <b>Compiler &rarr; Source &rarr; Include file directories
+					(-I)</b><br>
+				Using the <b>[Add...]</b> button, include the following entries:
+			</p>
+			<ul>
+				<li><i>${workspace_loc:/${ProjName}/src/display/driver}</i></li>
+				<li><i>${workspace_loc:/${ProjName}/src/display/assert}</i></li>
+				<li><i>${workspace_loc:/${ProjName}/src/display/text}</i></li>
+				<li><i>${workspace_loc:/${ProjName}/src/elcl}</i></li>
+				<li><i>${workspace_loc:/${ProjName}/src}</i></li>
+			</ul>
+			<p>The following animation and picture show the procedure to access the build settings &amp; result of the
+				additions
+				respecitvely.</p>
+			<img class="modal-thumbnails" src="img/img_lab/compilerincludes.gif" alt=""><br>
+			<img class="modal-thumbnails" src="img/img_lab/compilerincludes.png" alt="">
+		</details>
+
+		<details>
+			<summary>3.3 Create Application Header</summary>
+			<p>Now lets generate a main.h header file where we can store some useful typedefs &amp; other project
+				macros/variables used between the drivers and applciation code. This will be our interface file between
+				the components across the application.<br>
+				<b>[Right-Click] src folder &rarr; New &rarr; Header File</b><br>
+				Name the header file <b>"main.h"</b> &amp; set the template to <b>&lt;none&gt;</b> then copy the code
+				below into the file <b>"main.h"</b> you have just created.
+			</p>
+			<img class="modal-thumbnails" src="img/img_lab/mainheadercreate.gif" alt=""><br>
+			<pre><code class="C">#ifndef MAIN_H_
+#define MAIN_H_
+
+#include "r_smc_entry.h"
+#include "st7735s.h"
+#include "text.h"
+#include "elcl.h"
+
+#define MAXIMUM_SYSTEM_STATES	(3)
+
+/** @brief sets a hardware event flag*/
+#define HW_SET_EVENT(flags,event)	{flags |= event;}
+/** @brief Checks if hardware event flag is set*/
+#define HW_EVENT_OCCURRED(flags,event)	( ((flags) & (event)) == event )
+
+
+/** @brief macro used to prepare for disabling interrupts*/
+#define PREPARE_CRITICAL_SECTION() uint8_t l_int_status = Interrupts_enabled()
+/** @brief macro used to disable interrupts*/
+#define ENTER_CRITICAL_SECTION()	DI()
+/** @brief macro used to enable interrupts*/
+#define EXIT_CRITICAL_SECTION()	if(l_int_status == 1U) { EI(); }
+
+
+/** @brief Configuration macro for state text X location*/
+#define TEXT_X_POSITION		(65U)
+/** @brief Configuration macro for state text Y location*/
+#define TEXT_Y_POSITION		(20U)
+
+
+/** @brief Enumerated type for hardware event flags*/
+typedef enum
+{
+	NO_EVENT				=	0x0000U,
+	BUTTON_CLICK 			=	0x0001U,
+	ROTARY_COUNT_UPDATED 	=	0x0002U,
+	ALL_HARDWARE_EVENTS		=	0x0003U,
+}hardware_event_t;
+
+/** @brief Enumerated type for backlight level*/
+typedef enum
+{
+	BACKLIGHT_OFF			=	0x0000U,
+	BACKLIGHT_DIM			=	0x0001U,
+	BACKLIGHT_ON			=	0x0002U,
+}backlight_level_t;
+
+/** Colours*/
+static const uint8_t COLOUR_BLACK[] = {0x00, 0x00};
+static const uint8_t COLOUR_WHITE[] = {0xFF, 0xFF};
+
+/** rotary counter*/
+extern volatile int16_t rotary_count;
+/** hardware event flags*/
+extern volatile hardware_event_t hw_event_flags;
+
+#endif</code></pre>
+
+		</details>
+
+		<details>
+			<summary>3.4 Edit the DTC Driver</summary>
+			<p>The DTC base driver doesn't provide the appropriate functionality out of the box - so let's edit it and
+				give ourselves the function we need, this is a dtc start function which resets the count register &amp;
+				the transfer source address.<br><br>
+				Navigate to <b>[src] &rarr; [smc_gen] &rarr; [Config_DTC] &rarr; Config_DTC.h</b><br>
+				At the bottom of the file, in the "Start user code for function..." comment gaurd - place the following
+				function declaration.
+			</p>
+
+			<pre><code class="C">/** @brief Function to start the DTC running for tone generation.
+* @param tone - pointer to near data (16bit address) to set the source address for DTC0 transfers.
+*/
+void Start_dtc(__near uint8_t * tone);</code></pre>
+
+			<p>Which should look like this:</p>
+			<img class="modal-thumbnails" src="img/img_lab/dtcheader.png" alt="">
+
+			<p>Next navigate to the corresponding <b>Config_DTC.c</b> file ([src] &rarr; [smc_gen] &rarr; [Config_DTC]
+				&rarr; Config_DTC.c) and please add the following code at the bottom of the file, again within the
+				comment gaurd "Start user code for adding...".
+			</p>
+
+			<pre><code class="C">
+void Start_dtc(__near uint8_t * tone)
+{
+	dtc_controldata_0.dtcct = _09_DTCD0_TRANSFER_BYTE;
+	dtc_controldata_0.dtsar = (uint16_t)tone;
+	DTCEN3 |= _04_DTC_TAU06_ACTIVATION_ENABLE;
+}
+/* END OF FUNCTION*/</code></pre>
+
+			<p>Which should look like this:</p>
+			<img class="modal-thumbnails" src="img/img_lab/dtcsrc.png" alt="">
+
+		</details>
+
+		<details>
+			<summary>3.5 Edit the SPI Driver</summary>
+			<p>The SPI base driver doesn't provide the appropriate functionality out of the box - so let's edit it and
+				give ourselves the functions we need, this is namely an SPI send function which blocks and polls the tx
+				end flag until data is finished sending &amp; which accesses data in the far
+				memory area - useful when driving a display as images are often stored in ROM.<br><br>
+				Navigate to <b>[src] &rarr; [smc_gen] &rarr; [Config_CSI00] &rarr; Config_CSI00.h</b><br>
+				At the bottom of the file, in the "Start user code for function..." comment gaurd - place the following
+				function declaration.
+			</p>
+
+			<pre><code class="C">/**@brief Start application and masks interrupt flags*/
+void R_Config_CSI00_Start_app(void);
+/**@brief Send data with far addressing over SPI.
+ * @param tx_buf - pointer to 8bit width buffer.
+ * @param tx_num - number of bytes to send
+ * Function is blocking.
+ */
+void R_Config_CSI00_Send_app(uint8_t __far const * const tx_buf, uint16_t tx_num);</code></pre>
+
+			<p>Which should look like this:</p>
+			<img class="modal-thumbnails" src="img/img_lab/spiheader.png" alt="">
+
+			<p>Next navigate to the corresponding <b>Config_CSI00.c</b> file ([src] &rarr; [smc_gen] &rarr;
+				[Config_CSI00]
+				&rarr; Config_CSI000.c) and please add the following code at the bottom of the file, again within the
+				comment gaurd "Start user code for adding...".
+			</p>
+
+			<pre><code class="C">void R_Config_CSI00_Start_app(void)
+{
+	SO0 &= (uint16_t)~_0100_SAU_CH0_CLOCK_OUTPUT_1;    /* CSI00 clock initial level */
+	SO0 &= (uint16_t)~_0001_SAU_CH0_DATA_OUTPUT_1;    /* CSI00 SO initial level */
+	SOE0 |= _0001_SAU_CH0_OUTPUT_ENABLE;    /* enable CSI00 output */
+	SS0 |= _0001_SAU_CH0_START_TRG_ON;    /* enable CSI00 */
+	CSIIF00 = 0U;    /* clear INTCSI00 interrupt flag */
+	CSIMK00 = 1U;    /* disable INTCSI00 interrupt */
+}
+
+void R_Config_CSI00_Send_app(uint8_t __far const * const tx_buf, uint16_t tx_num)
+{
+	uint16_t l_tx_num = tx_num;
+	uint8_t __far const * l_tx_buf = tx_buf;
+
+	while(l_tx_num > 0U)
+	{
+		SIO00 = *l_tx_buf;
+
+		l_tx_num--;
+		l_tx_buf++;
+
+		/* Wait for the interrupt flag to set*/
+		while(0U == CSIIF00)
+		{
+			NOP();
+		}
+
+		CSIIF00 = 0U;
+	}
+}</code></pre>
+
+			<p>Which should look like this:</p>
+			<img class="modal-thumbnails" src="img/img_lab/spisrc.png" alt="">
+
+		</details>
+
+		<details>
+			<summary>3.6 Populate TAU00 ISR</summary>
+			<p>The clockwise external event counter needs it's ISR populating - this ISR fires every time a clockwise
+				rotation (mechanical indent of the rotary encoder) is detected. We fill this ISR with some code so the
+				application can be made aware of a clockwise rotation.<br><br>
+				Now first we need to include our "main.h" file from earlier to enable the ISR to communicate with the
+				application.
+				Navigate to the <b>[src] &rarr; [smc_gen] &rarr; [Config_TAU0_0] &rarr; Config_TAU0_0_user.c</b> &amp;
+				copy the code below into the includes section of the file, inside the "Start user code for include..."
+				comment gaurd.
+			</p>
+			<pre><code class="C">#include "main.h"</code></pre>
+			<p>Then inside the R_Config_TAU0_0_Create_UserInit function, please place the following code. This code
+				enables the noise filter on the input so will filter any noise on the encoder signals. This location is
+				software hook called at the end of the create API &amp; code should be placed within the "Start user
+				code for user init..." comment gaurd.
+			</p>
+			<pre><code class="C">NFEN1_bit.no0 = 1U;</code></pre>
+			<p>Finally inside the r_Config_TAU0_0_interrupt isr, please place the following code. This code
+				signals to the application that a rotary event has been detected and manipulates a counter. It also
+				clears the interrupt flags and restarts <b>both</b> timers as a debounce precaution. It should be
+				placed within the "Start user code for r_Config_TAU0_0_interrupt..." comment gaurd.
+			</p>
+			<pre><code class="C">TS0 |= _0001_TAU_CH0_START_TRG_ON;
+TS0 |= _0002_TAU_CH1_START_TRG_ON;
+				
+TMIF01 = 0U;    /* clear INTTM01 interrupt flag */
+TMIF00 = 0U;    /* clear INTTM00 interrupt flag */
+				
+++rotary_count;
+				
+HW_SET_EVENT(hw_event_flags, ROTARY_COUNT_UPDATED);</code></pre>
+
+			<p>The changes should look like this when finished:</p>
+			<img class="modal-thumbnails" src="img/img_lab/tau00src.png" alt="">
+		</details>
+
+		<details>
+			<summary>3.7 Populate TAU01 ISR</summary>
+			<p>The anti-clockwise external event counter needs it's ISR populating - this ISR fires every time a
+				anti-clockwise
+				rotation (mechanical indent of the rotary encoder) is detected. We fill this ISR with some code so the
+				application can be made aware of a anti-clockwise rotation.<br><br>
+				Now first we need to include our "main.h" file from earlier to enable the ISR to communicate with the
+				application.
+				Navigate to the <b>[src] &rarr; [smc_gen] &rarr; [Config_TAU0_1] &rarr; Config_TAU0_1_user.c</b> &amp;
+				copy the code below into the includes section of the file, inside the "Start user code for include..."
+				comment gaurd.
+			</p>
+			<pre><code class="C">#include "main.h"</code></pre>
+			<p>Then inside the R_Config_TAU0_1_Create_UserInit function, please place the following code. This code
+				enables the noise filter on the input so will filter any noise on the encoder signals. This location is
+				software hook called at the end of the create API &amp; code should be placed within the "Start user
+				code for user init..." comment gaurd.
+			</p>
+			<pre><code class="C">NFEN1_bit.no0 = 1U;</code></pre>
+			<p>Finally inside the r_Config_TAU0_1_interrupt isr, please place the following code. This code
+				signals to the application that a rotary event has been detected and manipulates a counter. It also
+				clears the interrupt flags and restarts <b>both</b> timers as a debounce precaution. It should be
+				placed within the "Start user code for r_Config_TAU0_1_interrupt..." comment gaurd.
+			</p>
+			<pre><code class="C">TS0 |= _0001_TAU_CH0_START_TRG_ON;
+TS0 |= _0002_TAU_CH1_START_TRG_ON;
+
+TMIF01 = 0U;    /* clear INTTM01 interrupt flag */
+TMIF00 = 0U;    /* clear INTTM00 interrupt flag */
+
+--rotary_count;
+
+HW_SET_EVENT(hw_event_flags, ROTARY_COUNT_UPDATED);</code></pre>
+
+			<p>The changes should look like this when finished:</p>
+			<img class="modal-thumbnails" src="img/img_lab/tau01src.png" alt="">
+		</details>
+
+		<details>
+			<summary>3.8 Populate TAU03 ISR</summary>
+			<p>The delay counter fires when the button click on the rotary encoder is released - we need to poluate the
+				ISR with some code so it can signal to the application a button click has been detected.<br><br>
+				Now first we need to include our "main.h" file from earlier to enable the ISR to communicate with the
+				application.
+				Navigate to the <b>[src] &rarr; [smc_gen] &rarr; [Config_TAU0_3] &rarr; Config_TAU0_3_user.c</b> &amp;
+				copy the code below into the includes section of the file, inside the "Start user code for include..."
+				comment gaurd.</p>
+			<pre><code class="C">#include "main.h"</code></pre>
+			<p>Then inside the r_Config_TAU0_3_interrupt isr, please place the following code. This code
+				signals to the application that a button click event has been detected. It should be
+				placed within the "Start user code for r_Config_TAU0_3_interrupt..." comment gaurd.
+			</p>
+			<pre><code class="C">HW_SET_EVENT(hw_event_flags, BUTTON_CLICK);</code></pre>
+
+			<p>The changes should look like this when finished:</p>
+			<img class="modal-thumbnails" src="img/img_lab/tau03src.png" alt="">
+		</details>
+
+		<details>
+			<summary>3.9 Edit the TAU04 Driver</summary>
+			<p>The interval timer TAU04 base driver doesn't provide the appropriate functionality out of the box - so
+				let's edit it and give ourselves the function we need, this is a ms resolution blocking delay.<br><br>
+				Navigate to <b>[src] &rarr; [smc_gen] &rarr; [Config_TAU0_4] &rarr; Config_TAU0_4.h</b><br>
+				At the bottom of the file, in the "Start user code for function..." comment gaurd - place the following
+				function declaration.</p>
+
+			<pre><code class="C">/** @brief function to use a timer to delay ms number of milliseconds.
+* @param ms - number of milliseconds to delay.
+*/
+void Delay_ms(uint16_t ms);</code></pre>
+
+			<p>Which should look like this:</p>
+			<img class="modal-thumbnails" src="img/img_lab/tau04header.png" alt="">
+
+			<p>Next navigate to the corresponding <b>Config_TAU0_4.c</b> file ([src] &rarr; [smc_gen] &rarr;
+				[Config_TAU0_4] &rarr; Config_TAU0_4.c) and please add the following code at the bottom of the file,
+				again within the comment gaurd "Start user code for adding...".
+			</p>
+
+			<pre><code class="C">void Delay_ms(uint16_t ms)
+{
+	if(ms > 0U)
+	{
+		TDR04 = (ms > 1U) ? (ms << 2U)-1U : 0U;
+	
+		TMMK04 = 1U;    /* disable INTTM02 interrupt */
+		TMIF04 = 0U;    /* clear INTTM02 interrupt flag */
+	
+		TS0 |= _0010_TAU_CH4_START_TRG_ON;
+	
+		while(0U == TMIF04)
+		{
+			NOP();
+		}
+	
+		TT0 |= _0010_TAU_CH4_STOP_TRG_ON;
+	
+		TMIF04 = 0U;    /* clear INTTM02 interrupt flag */
+	}
+}
+/* END OF FUNCTION*/</code></pre>
+
+			<p>Which should look like this:</p>
+			<img class="modal-thumbnails" src="img/img_lab/tau04src.png" alt="">
+		</details>
+
+		<details>
+			<summary>3.10 Edit the TAU06 Driver</summary>
+			<p>The interval timer TAU06 base driver doesn't provide the appropriate functionality out of the box - so
+				let's edit it and give ourselves the function we need, this is running the interval timer until the DTC
+				completes generating the tone.<br><br>
+				Navigate to <b>[src] &rarr; [smc_gen] &rarr; [Config_TAU0_6] &rarr; Config_TAU0_6.h</b><br>
+				At the bottom of the file, in the "Start user code for function..." comment gaurd - place the following
+				function declaration.</p>
+
+			<pre><code class="C">/** @brief used to start the timer and wait for the interrupt to finish*/
+void Start_timer_wfi(void);</code></pre>
+
+			<p>Which should look like this:</p>
+			<img class="modal-thumbnails" src="img/img_lab/tau06header.png" alt="">
+
+			<p>Next navigate to the corresponding <b>Config_TAU0_6_user.c</b> file ([src] &rarr; [smc_gen] &rarr;
+				[Config_TAU0_6] &rarr; Config_TAU0_6_user.c) and please add the following variable declaration near the
+				top
+				of the file,
+				within the comment gaurd "Start user code for global...".
+			</p>
+
+			<pre><code class="C">static uint8_t alarm_done = 0U;</code></pre>
+
+			<p>In the same file please place the following code. This code signals the variable that the DTC has
+				finished and then stops the interval timer from running. It should be placed within the "Start user code
+				for r_Config_TAU0_6_interrupt..." comment gaurd.</p>
+
+			<pre><code class="C">alarm_done = 1U;
+R_Config_TAU0_6_Stop();</code></pre>
+
+			<p>Finally in the same file please add the following code at the bottom of the file,
+				within the comment gaurd "Start user code for adding...".<br>
+				This function starts the timer and waits for the ISR to be fired - which only occurs after the DTC has
+				finished its transfers.
+			</p>
+
+			<pre><code class="C">void Start_timer_wfi(void)
+{
+	alarm_done = 0U;
+	R_Config_TAU0_6_Start();
+
+	while(0U == alarm_done)
+	{
+		NOP();
+	}
+}
+/* END OF FUNCTION*/</code></pre>
+
+			<p>Which should all combined look like this:</p>
+			<img class="modal-thumbnails" src="img/img_lab/tau06src.png" alt="">
+		</details>
+
+		<details>
+			<summary>3.11 Pull In The Main Code</summary>
+			<p>Now lets copy in the main code - this is running the application.<br>
+				Simply <b>replace</b> the entire contents of your main source file src/<i>&lt;project_name&gt;.c</i>
+				with the code below.</p>
+
+			<pre><code class="C">/***********************************************************************************************************************
+* DISCLAIMER
+* This software is supplied by Renesas Electronics Corporation and is only intended for use with Renesas products.
+* No other uses are authorized. This software is owned by Renesas Electronics Corporation and is protected under all
+* applicable laws, including copyright laws. 
+* THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING THIS SOFTWARE, WHETHER EXPRESS, IMPLIED
+* OR STATUTORY, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NON-INFRINGEMENT.  ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED.TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY
+* LAW, NEITHER RENESAS ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE FOR ANY DIRECT,
+* INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR
+* ITS AFFILIATES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+* Renesas reserves the right, without notice, to make changes to this software and to discontinue the availability 
+* of this software. By using this software, you agree to the additional terms and conditions found by accessing the 
+* following link:
+* http://www.renesas.com/disclaimer
+*
+* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+***********************************************************************************************************************/
+
+/***********************************************************************************************************************
+*  File Name    : ACTUATION_TRAINING.c
+*  Description  : Main Program
+*  Creation Date: 2023-02-16
+*  This file was generated by Smart Configurator.
+***********************************************************************************************************************/
+#include "main.h"
+
+/* Display area data*/
+static ST7735S_display_area_info_t disp_info;
+/* Hardware event flags & buffer variable*/
+volatile hardware_event_t hw_event_flags = NO_EVENT;
+volatile hardware_event_t hw_event_flags_copy = NO_EVENT;
+/* rotary counter*/
+volatile int16_t rotary_count;
+
+/** @brief Tones to be used by the DTC*/
+uint8_t tones[MAXIMUM_SYSTEM_STATES][9] = {
+		{0x8FU, 0x8FU, 0x8EU, 0x8EU, 0x8DU, 0x8DU, 0x8CU, 0x8CU, 0x00U},
+		{0x8CU, 0x8CU, 0x8DU, 0x8DU, 0x8EU, 0x8EU, 0x8FU, 0x8FU, 0x00U},
+		{0x8CU, 0x8DU, 0x8EU, 0x8FU, 0x8CU, 0x8DU, 0x8EU, 0x8FU, 0x00U},
+};
+
+void main(void)
+{
+	/****************************************************************************************
+	 *  Initialisation																		*
+	 ***************************************************************************************/
+	EI();
+
+	/* Call necessary configurator start API's*/
+	R_Config_TAU0_0_Start();
+	R_Config_TAU0_1_Start();
+	R_Config_TAU0_3_Start();
+	R_Config_CSI00_Start_app();
+
+	/* Initialise the ELCL*/
+	Elcl_set_input(&elcl_ctl, ELCL_INPUT_4, ELCL_SRC_PIN1_611_INTC5);
+	Elcl_set_input(&elcl_ctl, ELCL_INPUT_6, ELCL_SRC_P51);
+	Elcl_link_input(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_2, ELCL_INPUT_REG_4, ELCL_INVERTED_LOGIC);
+	Elcl_link_input(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_6, ELCL_INPUT_REG_6, ELCL_INVERTED_LOGIC);
+	Elcl_link_input(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_0, ELCL_INPUT_REG_4, ELCL_INVERTED_LOGIC);
+	Elcl_link_input(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_1, ELCL_INPUT_REG_6, ELCL_INVERTED_LOGIC);
+	Elcl_set_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_ENABLE_FLIPFLOP0);
+	Elcl_set_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_EXOR_CELL_0);
+	Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_2, ELCL_FLIP_FLOP0_INPUT);
+	Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_6, ELCL_FLIP_FLOP0_CLK);
+	Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_0, ELCL_CELL0_INPUT_0);
+	Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_1, ELCL_CELL0_INPUT_1);
+
+	Elcl_link_input(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_0, ELCL_OUTPUT_FLIP_FLOP0_L1, ELCL_INVERTED_LOGIC);
+	Elcl_link_input(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_1, ELCL_OUTPUT_FLIP_FLOP0_L1, ELCL_POSITIVE_LOGIC);
+	Elcl_link_input(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_2, ELCL_OUTPUT_CELL0_L1, ELCL_INVERTED_LOGIC);
+	Elcl_link_input(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_3, ELCL_OUTPUT_CELL0_L1, ELCL_INVERTED_LOGIC);
+	Elcl_set_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_AND_CELL_0);
+	Elcl_set_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_AND_CELL_1);
+	Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_0, ELCL_CELL0_INPUT_0);
+	Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_2, ELCL_CELL0_INPUT_1);
+	Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_1, ELCL_CELL1_INPUT_0);
+	Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_3, ELCL_CELL1_INPUT_1);
+
+	Elcl_set_output(&elcl_ctl, ELCL_OUTPUT_3, ELCL_OUTPUT_L2_CELL0, ELCL_POSITIVE_LOGIC);
+	Elcl_set_output(&elcl_ctl, ELCL_OUTPUT_4, ELCL_OUTPUT_L2_CELL1, ELCL_POSITIVE_LOGIC);
+	Elcl_set_output_state(&elcl_ctl, ELCL_OUTPUT_3, ELCL_OUTPUT_ENABLED);
+	Elcl_set_output_state(&elcl_ctl, ELCL_OUTPUT_4, ELCL_OUTPUT_ENABLED);
+
+	/* Initialise the display driver*/
+	St7735s_init(COLOUR_WHITE);
+	St7735s_get_display_area_info(&disp_info);
+	Text_init(disp_info.xmax, disp_info.ymax);
+	Text_set_font(&default_font);
+	St7735s_wake_display();
+	St7735s_display_on();
+	CCDE |= 0x40U;
+	CCS6 = 0x04U; /* 15mA backlight*/
+
+	/* Write default text*/
+	Text_put_line(TEXT_X_POSITION, TEXT_Y_POSITION, "1", COLOUR_BLACK, COLOUR_WHITE);
+
+	/****************************************************************************************
+	 *  Main loop																			*
+	 ***************************************************************************************/
+	while(1)
+	{
+		static int16_t system_output_state = 1;
+
+		DI();
+		hw_event_flags_copy = hw_event_flags;
+		hw_event_flags &= ~hw_event_flags_copy; /* Clear the events which have been detected*/
+		EI();
+
+		if(HW_EVENT_OCCURRED(hw_event_flags_copy, BUTTON_CLICK))
+		{
+			CCS0 = (system_output_state % MAXIMUM_SYSTEM_STATES) + 1;
+			CCDE |= 0x03U; /* Turn on LED's*/
+
+			if((system_output_state > 0) && (system_output_state <= MAXIMUM_SYSTEM_STATES))
+			{
+				Start_dtc((__near uint8_t *)&tones[system_output_state-1]);
+				Start_timer_wfi();
+			}
+		}
+
+		if(HW_EVENT_OCCURRED(hw_event_flags_copy, ROTARY_COUNT_UPDATED))
+		{
+			static char l_str[16] = {0,};
+
+			DI();
+			int16_t l_rot_count = rotary_count % MAXIMUM_SYSTEM_STATES; /* Apply maximum range on rotary count*/
+			rotary_count = 0;
+			EI();
+
+			if((system_output_state + l_rot_count) <= 0)
+			{
+				system_output_state = MAXIMUM_SYSTEM_STATES + 1;
+			}
+			else if((system_output_state + l_rot_count) > MAXIMUM_SYSTEM_STATES)
+			{
+				system_output_state = 0;
+			}
+			else
+			{
+				/* Do Nothing*/
+			}
+
+			system_output_state += l_rot_count;
+
+			(void)Text_int_to_str(system_output_state, l_str);
+
+			/* Erase previous text*/
+			Text_put_line(TEXT_X_POSITION, TEXT_Y_POSITION, "  ", COLOUR_BLACK, COLOUR_WHITE);
+
+			/* Write new text*/
+			Text_put_line(TEXT_X_POSITION, TEXT_Y_POSITION, l_str, COLOUR_BLACK, COLOUR_WHITE);
+		}
+	}
+}
+/* END OF MAIN*/</code></pre>
+
+		</details>
+
+		<details>
+			<summary>3.12 Application Explained <i>[Informative]</i></summary>
+			<p>As the section name implies this in informative, there are no actions in this step and it can be freely
+				skipped. But this section aims to explain the application code and provide a clear understanding of why
+				&amp; how certain things have been done. We will do this by combing through the code, picking out
+				lines of code or groups of lines of code in order to dissect what is happening.<br><br>
+
+				The application is inherently simple once configured - the main loop infinitely waits for either a
+				button click or rotation event to be signalled from the hardware layer (ISR's).<br>
+				These events are signalled through a variable hw_event_flags. The mechanism for setting and getting the
+				events is provided through simple bit manipulation.<br>
+				Each bit is defined in an enumerated typedef to clearly define the events which can be stored in the
+				hardware event flags type hw_event_flags_t.<br>
+				Setting and checking events has been simplified with macros in the application header defined.<br>
+				The checking of this variable is done via copy during disabled interrupts to emulate a simplified
+				critical section.<br>
+				The image below shows the flowchart for the top level main loop.
+			</p>
+			<img class="modal-thumbnails" src="img/img_lab/actuator_lab_fc_main.png" alt=""><br>
+
+			<p>For each of the two events (button click and rotation) there is a handling process.<br>
+				A button click invokes the tone generation and latches the LED CCIO current strength corresponding to
+				the system state.<br>
+				The flowchart for executing this can be seen in the image below.
+			</p>
+			<img class="modal-thumbnails" src="img/img_lab/actuator_lab_fc_buttonclick.png" alt=""><br>
+
+			<p>The rotation event simply invokes a system state change (output LED current strength &amp; tone sequence
+				change) which is represented by simply writing a state number to the display. The new tone and LED CCIO
+				current strength can be output by clicking the button.<br>
+				The flowchart for executing this can be seen in the image below.
+			</p>
+			<img class="modal-thumbnails" src="img/img_lab/actuator_lab_fc_rotation.png" alt=""><br>
+
+			<p>An important part of the intialisation process is the ELCL settings. We are aiming to achieve the
+				following circuit:
+			</p>
+			<img class="modal-thumbnails" src="img/img_lab/rotarydecoding1.png" alt=""><br>
+
+			<p>To do so there are 4 components when intialising the ELCL:</p>
+			<ol>
+				<li><b>Elcl_set_input</b>: Select the input pins - this means the ELCL inputs 4 & 6 are linked to their
+					respecitve pins.
+					<pre class="no-copy"><code class="C">Elcl_set_input(&elcl_ctl, ELCL_INPUT_4, ELCL_SRC_PIN1_611_INTC5);
+Elcl_set_input(&elcl_ctl, ELCL_INPUT_6, ELCL_SRC_P51);</code></pre>
+				</li>
+				<li>ELCL Block 1:
+					<ul>
+						<li><b>Elcl_link_input</b>: Link input pins to to block 1's link registers - this means our
+							input
+							pins on inputs 4 & 6 are now linked to block 1's link registers 2,0 & 6,1 respecitvely.
+							<pre class="no-copy"><code class="C">Elcl_link_input(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_2, ELCL_INPUT_REG_4, ELCL_INVERTED_LOGIC);
+Elcl_link_input(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_6, ELCL_INPUT_REG_6, ELCL_INVERTED_LOGIC);
+Elcl_link_input(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_0, ELCL_INPUT_REG_4, ELCL_INVERTED_LOGIC);
+Elcl_link_input(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_1, ELCL_INPUT_REG_6, ELCL_INVERTED_LOGIC);</code></pre>
+						</li>
+						<li><b>Elcl_set_logic</b>: Enable the logic gates of interest in logic block 1 - this means we
+							can
+							enable the flip lop and EXOR gate or direction detection and clock generation respectively.
+							<pre class="no-copy"><code class="C">Elcl_set_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_ENABLE_FLIPFLOP0);
+Elcl_set_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_EXOR_CELL_0);</code></pre>
+						</li>
+						<li><b>Elcl_link_to_logic</b>: Link the input link registers for block 1 to the logic cells
+							meaning
+							link registers 2,6 & 0,1 are now connected to the flip flop and exor gates respectively.
+							<pre class="no-copy"><code class="C">Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_2, ELCL_FLIP_FLOP0_INPUT);
+Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_6, ELCL_FLIP_FLOP0_CLK);
+Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_0, ELCL_CELL0_INPUT_0);
+Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK1, ELCL_LNK_1, ELCL_CELL0_INPUT_1);</code></pre>
+						</li>
+					</ul>
+				</li>
+				<li>ELCL Block 2:
+					<ul>
+						<li><b>Elcl_link_input</b>: Link outputs from block 1's logic gates to block 2.
+							<pre class="no-copy"><code class="C">Elcl_link_input(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_0, ELCL_OUTPUT_FLIP_FLOP0_L1, ELCL_INVERTED_LOGIC);
+Elcl_link_input(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_1, ELCL_OUTPUT_FLIP_FLOP0_L1, ELCL_POSITIVE_LOGIC);
+Elcl_link_input(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_2, ELCL_OUTPUT_CELL0_L1, ELCL_INVERTED_LOGIC);
+Elcl_link_input(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_3, ELCL_OUTPUT_CELL0_L1, ELCL_INVERTED_LOGIC);</code></pre>
+						</li>
+						<li><b>Elcl_set_logic</b>: Enable the logic gates of interest in logic block 2.
+							<pre class="no-copy"><code class="C">Elcl_set_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_AND_CELL_0);
+Elcl_set_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_AND_CELL_1);</code></pre>
+						</li>
+						<li><b>Elcl_link_to_logic</b>: Link the input link registers for block 2 to the logic cells.
+							<pre class="no-copy"><code class="C">Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_0, ELCL_CELL0_INPUT_0);
+Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_2, ELCL_CELL0_INPUT_1);
+Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_1, ELCL_CELL1_INPUT_0);
+Elcl_link_to_logic(&elcl_ctl, ELCL_BLOCK2, ELCL_LNK_3, ELCL_CELL1_INPUT_1);</code></pre>
+						</li>
+					</ul>
+				</li>
+				<li><b>Elcl_set_output &amp; <b></b>Elcl_set_output_state</b>: Select the ELCL outputs &amp; their
+					source's from
+					within the ELCL - then enable them.
+					<pre class="no-copy"><code class="C">Elcl_set_output(&elcl_ctl, ELCL_OUTPUT_3, ELCL_OUTPUT_L2_CELL0, ELCL_POSITIVE_LOGIC);
+Elcl_set_output(&elcl_ctl, ELCL_OUTPUT_4, ELCL_OUTPUT_L2_CELL1, ELCL_POSITIVE_LOGIC);
+Elcl_set_output_state(&elcl_ctl, ELCL_OUTPUT_3, ELCL_OUTPUT_ENABLED);
+Elcl_set_output_state(&elcl_ctl, ELCL_OUTPUT_4, ELCL_OUTPUT_ENABLED);</code></pre>
+				</li>
+			</ol>
+
+			<p>
+			</p>
+
+		</details>
+
+		<!-- Prepare the pages modal images-->
+		<script>lab_templater.Prepare_modal();</script>
+
+		<!-- Button for going to the next page-->
+		<script>lab_templater.Generate_next_page_button("Next...");</script>
+
+		<!-- Setup code copying functionality on all appropriately formatted code snippets-->
+		<script>Setup_code_copy();</script>
+
+	</div>
+</body>
+
+</html>
