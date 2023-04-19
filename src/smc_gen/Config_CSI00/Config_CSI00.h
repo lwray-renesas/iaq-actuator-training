@@ -54,7 +54,16 @@ void R_Config_CSI00_Stop(void);
 MD_STATUS R_Config_CSI00_Send(uint8_t * const tx_buf, uint16_t tx_num);
 void R_Config_CSI00_Create_UserInit(void);
 /* Start user code for function. Do not edit comment generated here */
+
+/**@brief Start application and masks interrupt flags*/
 void R_Config_CSI00_Start_app(void);
+
+/**@brief Send data with far addressing over SPI.
+ * @param tx_buf - pointer to 8bit width buffer.
+ * @param tx_num - number of bytes to send
+ * Function is blocking.
+ */
 void R_Config_CSI00_Send_app(const uint8_t * const tx_buf, uint16_t tx_num);
+
 /* End user code. Do not edit comment generated here */
 #endif

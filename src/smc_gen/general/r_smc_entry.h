@@ -37,7 +37,6 @@ Includes
 #include "Config_TAU0_4.h"
 #include "Config_TAU0_1.h"
 #include "Config_TAU0_0.h"
-#include "Config_TAU0_5.h"
 #include "r_cg_sau_common.h"
 #include "r_cg_tau_common.h"
 #include "r_cg_dtc_common.h"

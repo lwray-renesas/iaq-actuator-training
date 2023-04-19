@@ -62,6 +62,15 @@ void Hw_delay_ms(uint16_t ms)
 {
 	if(ms > 0U)
 	{
+		static uint16_t use_count = 0U;
+
+		while(use_count > 0U)
+		{
+			NOP();
+		}
+
+		++use_count;
+
 		TDR04 = (ms > 1U) ? (ms << 2U)-1U : 0U;
 
 		TMMK04 = 1U;    /* disable INTTM02 interrupt */
@@ -77,6 +86,8 @@ void Hw_delay_ms(uint16_t ms)
 		TT0 |= _0010_TAU_CH4_STOP_TRG_ON;
 
 		TMIF04 = 0U;    /* clear INTTM02 interrupt flag */
+
+		--use_count;
 	}
 }
 /* END OF FUNCTION*/

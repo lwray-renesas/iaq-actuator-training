@@ -43,6 +43,5 @@
         <Setting id="Config_TAU0_6" value="CG"/>
         <Setting id="Config_PCLBUZ1" value="CG"/>
         <Setting id="Config_TAU0_4" value="CG"/>
-        <Setting id="Config_TAU0_5" value="CG"/>
     </Segment>
 </QE>

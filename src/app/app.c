@@ -73,7 +73,7 @@ bool App_button_click_event(void)
 		/* Debounce*/
 		while(debounce_event_occured)
 		{
-			Hw_debounce_delay_ms(1U);
+			Hw_delay_ms(1U);
 
 			ENTER_CRITICAL_SECTION();
 
