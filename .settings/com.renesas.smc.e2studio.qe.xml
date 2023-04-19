@@ -14,7 +14,7 @@
         <Setting id="P73" value="P73"/>
         <Setting id="P40" value="TOOL0"/>
         <Setting id="P10" value="SCK00"/>
-        <Setting id="P31" value="TI03"/>
+        <Setting id="P31" value="INTP4"/>
     </Segment>
     <Segment id="Device">
         <Setting id="Series" value="RL78G2x"/>
@@ -37,11 +37,12 @@
         <Setting id="Config_TAU0_0" value="CG"/>
         <Setting id="r_bsp" value=""/>
         <Setting id="Config_TAU0_1" value="CG"/>
+        <Setting id="Config_INTC" value="CG"/>
         <Setting id="Config_CSI00" value="CG"/>
         <Setting id="Config_PORT" value="CG"/>
         <Setting id="Config_TAU0_6" value="CG"/>
         <Setting id="Config_PCLBUZ1" value="CG"/>
         <Setting id="Config_TAU0_4" value="CG"/>
-        <Setting id="Config_TAU0_3" value="CG"/>
+        <Setting id="Config_TAU0_5" value="CG"/>
     </Segment>
 </QE>

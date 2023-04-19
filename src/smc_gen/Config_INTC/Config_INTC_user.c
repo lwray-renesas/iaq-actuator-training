@@ -18,28 +18,25 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : r_cg_tau_common.c
-* Version          : 1.0.11
+* File Name        : Config_INTC_user.c
+* Component Version: 1.2.0
 * Device(s)        : R7F100GFNxFP
-* Description      : None
+* Description      : This file implements device driver for Config_INTC.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "r_cg_userdefine.h"
-#include "Config_TAU0_6.h"
-#include "Config_TAU0_4.h"
-#include "Config_TAU0_1.h"
-#include "Config_TAU0_0.h"
-#include "Config_TAU0_5.h"
-#include "r_cg_tau_common.h"
+#include "Config_INTC.h"
 /* Start user code for include. Do not edit comment generated here */
+#include "../../app/app.h"
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Pragma directive
 ***********************************************************************************************************************/
+#pragma interrupt r_Config_INTC_intp4_interrupt(vect=INTP4)
 /* Start user code for pragma. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 
@@ -50,64 +47,28 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_TAU0_Create
-* Description  : This function enables TAU0 input clock supply and initializes TAU0 module.
+* Function Name: R_Config_INTC_Create_UserInit
+* Description  : This function adds user code after initializing the INTC module.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_TAU0_Create(void)
+void R_Config_INTC_Create_UserInit(void)
 {
-    TAU0EN = 1U;    /* start TAU0 clock */
-    /* Set TAU0 settings */
-    R_Config_TAU0_6_Create();
-    R_Config_TAU0_4_Create();
-    R_Config_TAU0_1_Create();
-    R_Config_TAU0_0_Create();
-    R_Config_TAU0_5_Create();
+    /* Start user code for user init. Do not edit comment generated here */
+    /* End user code. Do not edit comment generated here */
 }
 
 /***********************************************************************************************************************
-* Function Name: R_TAU0_Set_PowerOn
-* Description  : This function starts the clock supply for TAU0.
+* Function Name: r_Config_INTC_intp4_interrupt
+* Description  : This function is INTP4 interrupt service routine
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_TAU0_Set_PowerOn(void)
+static void __near r_Config_INTC_intp4_interrupt(void)
 {
-    TAU0EN = 1U;    /* start TAU0 clock */
-}
-
-/***********************************************************************************************************************
-* Function Name: R_TAU0_Set_PowerOff
-* Description  : This function stops the clock supply for TAU0.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void R_TAU0_Set_PowerOff(void)
-{
-    TAU0EN = 0U;    /* stop TAU0 clock */
-}
-
-/***********************************************************************************************************************
-* Function Name: R_TAU0_Set_Reset
-* Description  : This function sets TAU0 module in reset state.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void R_TAU0_Set_Reset(void)
-{
-    TAU0RES = 1U;    /* reset TAU0 */
-}
-
-/***********************************************************************************************************************
-* Function Name: R_TAU0_Release_Reset
-* Description  : This function releases TAU0 module from reset state.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void R_TAU0_Release_Reset(void)
-{
-    TAU0RES = 0U;    /* release TAU0 */
+    /* Start user code for r_Config_INTC_intp4_interrupt. Do not edit comment generated here */
+	HW_SET_EVENT(hw_event_flags, BUTTON_CLICK);
+    /* End user code. Do not edit comment generated here */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

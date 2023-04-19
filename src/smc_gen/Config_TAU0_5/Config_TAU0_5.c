@@ -18,22 +18,17 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : r_cg_tau_common.c
-* Version          : 1.0.11
+* File Name        : Config_TAU0_5.c
+* Component Version: 1.2.0
 * Device(s)        : R7F100GFNxFP
-* Description      : None
+* Description      : This file implements device driver for Config_TAU0_5.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "r_cg_userdefine.h"
-#include "Config_TAU0_6.h"
-#include "Config_TAU0_4.h"
-#include "Config_TAU0_1.h"
-#include "Config_TAU0_0.h"
 #include "Config_TAU0_5.h"
-#include "r_cg_tau_common.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 
@@ -50,64 +45,60 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_TAU0_Create
-* Description  : This function enables TAU0 input clock supply and initializes TAU0 module.
+* Function Name: R_Config_TAU0_5_Create
+* Description  : This function initializes the TAU0 channel 5 module.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_TAU0_Create(void)
+void R_Config_TAU0_5_Create(void)
 {
-    TAU0EN = 1U;    /* start TAU0 clock */
-    /* Set TAU0 settings */
-    R_Config_TAU0_6_Create();
-    R_Config_TAU0_4_Create();
-    R_Config_TAU0_1_Create();
-    R_Config_TAU0_0_Create();
-    R_Config_TAU0_5_Create();
+    TPS0 &= _FF0F_TAU_CKM1_CLEAR;
+    TPS0 |= _00E0_TAU_CKM1_FCLK_14;
+    /* Stop channel 5 */
+    TT0 |= _0020_TAU_CH5_STOP_TRG_ON;
+    /* Mask channel 5 interrupt */
+    TMMK05 = 1U;    /* disable INTTM05 interrupt */
+    TMIF05 = 0U;    /* clear INTTM05 interrupt flag */
+    /* Set INTTM05 low priority */
+    TMPR105 = 1U;
+    TMPR005 = 1U;
+    /* TAU05 used as interval timer */
+    TMR05 = _8000_TAU_CLOCK_SELECT_CKM1 | _0000_TAU_CLOCK_MODE_CKS | _0000_TAU_TRIGGER_SOFTWARE | 
+            _0000_TAU_MODE_INTERVAL_TIMER | _0000_TAU_START_INT_UNUSED;
+    TDR05 = _0000_TAU_TDR05_VALUE;
+    TOM0 &= (uint16_t)~_0020_TAU_CH5_SLAVE_OUTPUT;
+    TOL0 &= (uint16_t)~_0020_TAU_CH5_OUTPUT_LEVEL_L;
+    TO0 &= (uint16_t)~_0020_TAU_CH5_OUTPUT_VALUE_1;
+    TOE0 &= (uint16_t)~_0020_TAU_CH5_OUTPUT_ENABLE;
+    
+    R_Config_TAU0_5_Create_UserInit();
 }
 
 /***********************************************************************************************************************
-* Function Name: R_TAU0_Set_PowerOn
-* Description  : This function starts the clock supply for TAU0.
+* Function Name: R_Config_TAU0_5_Start
+* Description  : This function starts the TAU0 channel 5 counter.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_TAU0_Set_PowerOn(void)
+void R_Config_TAU0_5_Start(void)
 {
-    TAU0EN = 1U;    /* start TAU0 clock */
+    TMIF05 = 0U;    /* clear INTTM05 interrupt flag */
+    TMMK05 = 0U;    /* enable INTTM05 interrupt */
+    TS0 |= _0020_TAU_CH5_START_TRG_ON;
 }
 
 /***********************************************************************************************************************
-* Function Name: R_TAU0_Set_PowerOff
-* Description  : This function stops the clock supply for TAU0.
+* Function Name: R_Config_TAU0_5_Stop
+* Description  : This function stops the TAU0 channel 5 counter.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_TAU0_Set_PowerOff(void)
+void R_Config_TAU0_5_Stop(void)
 {
-    TAU0EN = 0U;    /* stop TAU0 clock */
-}
-
-/***********************************************************************************************************************
-* Function Name: R_TAU0_Set_Reset
-* Description  : This function sets TAU0 module in reset state.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void R_TAU0_Set_Reset(void)
-{
-    TAU0RES = 1U;    /* reset TAU0 */
-}
-
-/***********************************************************************************************************************
-* Function Name: R_TAU0_Release_Reset
-* Description  : This function releases TAU0 module from reset state.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void R_TAU0_Release_Reset(void)
-{
-    TAU0RES = 0U;    /* release TAU0 */
+    TT0 |= _0020_TAU_CH5_STOP_TRG_ON;
+    /* Mask channel 5 interrupt */
+    TMMK05 = 1U;    /* disable INTTM05 interrupt */
+    TMIF05 = 0U;    /* clear INTTM05 interrupt flag */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

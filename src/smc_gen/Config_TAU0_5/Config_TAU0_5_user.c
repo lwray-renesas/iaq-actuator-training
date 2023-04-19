@@ -18,25 +18,24 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : Config_TAU0_3_user.c
+* File Name        : Config_TAU0_5_user.c
 * Component Version: 1.2.0
 * Device(s)        : R7F100GFNxFP
-* Description      : This file implements device driver for Config_TAU0_3.
+* Description      : This file implements device driver for Config_TAU0_5.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "r_cg_userdefine.h"
-#include "Config_TAU0_3.h"
+#include "Config_TAU0_5.h"
 /* Start user code for include. Do not edit comment generated here */
-#include "../../app/app.h"
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Pragma directive
 ***********************************************************************************************************************/
-#pragma interrupt r_Config_TAU0_3_interrupt(vect=INTTM03)
+#pragma interrupt r_Config_TAU0_5_interrupt(vect=INTTM05)
 /* Start user code for pragma. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 
@@ -47,29 +46,52 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Config_TAU0_3_Create_UserInit
-* Description  : This function adds user code after initializing the TAU0 channel3.
+* Function Name: R_Config_TAU0_5_Create_UserInit
+* Description  : This function adds user code after initializing the TAU0 channel 5.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_Config_TAU0_3_Create_UserInit(void)
+void R_Config_TAU0_5_Create_UserInit(void)
 {
     /* Start user code for user init. Do not edit comment generated here */
     /* End user code. Do not edit comment generated here */
 }
 
 /***********************************************************************************************************************
-* Function Name: r_Config_TAU0_3_interrupt
-* Description  : This function is INTTM03 interrupt service routine.
+* Function Name: r_Config_TAU0_5_interrupt
+* Description  : This function is INTTM05 interrupt service routine.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-static void __near r_Config_TAU0_3_interrupt(void)
+static void __near r_Config_TAU0_5_interrupt(void)
 {
-    /* Start user code for r_Config_TAU0_3_interrupt. Do not edit comment generated here */
-	HW_SET_EVENT(hw_event_flags, BUTTON_CLICK);
+    /* Start user code for r_Config_TAU0_5_interrupt. Do not edit comment generated here */
     /* End user code. Do not edit comment generated here */
 }
 
 /* Start user code for adding. Do not edit comment generated here */
+
+void Hw_debounce_delay_ms(uint16_t ms)
+{
+	if(ms > 0U)
+	{
+		TDR05 = (ms > 1U) ? (ms << 2U)-1U : 0U;
+
+		TMMK05 = 1U;
+		TMIF05 = 0U;
+
+		TS0 |= _0020_TAU_CH5_START_TRG_ON;
+
+		while(0U == TMIF05)
+		{
+			NOP();
+		}
+
+		TT0 |= _0020_TAU_CH5_STOP_TRG_ON;
+
+		TMIF05 = 0U;
+	}
+}
+/* END OF FUNCTION*/
+
 /* End user code. Do not edit comment generated here */

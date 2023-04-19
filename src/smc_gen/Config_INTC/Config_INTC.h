@@ -18,19 +18,19 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : Config_TAU0_3.h
+* File Name        : Config_INTC.h
 * Component Version: 1.2.0
 * Device(s)        : R7F100GFNxFP
-* Description      : This file implements device driver for Config_TAU0_3.
+* Description      : This file implements device driver for Config_INTC.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_tau.h"
+#include "r_cg_intc.h"
 
-#ifndef CFG_Config_TAU0_3_H
-#define CFG_Config_TAU0_3_H
+#ifndef CFG_Config_INTC_H
+#define CFG_Config_INTC_H
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)
@@ -39,7 +39,6 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define _00C2_TAU_TDR03_VALUE               (0x00C2U)    /* 16-bit timer data register 03 (TDR03) */
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -48,11 +47,10 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-void R_Config_TAU0_3_Create(void);
-void R_Config_TAU0_3_Start(void);
-void R_Config_TAU0_3_Stop(void);
-void R_Config_TAU0_3_Set_SoftwareTriggerOn(void);
-void R_Config_TAU0_3_Create_UserInit(void);
+void R_Config_INTC_Create(void);
+void R_Config_INTC_INTP4_Start(void);
+void R_Config_INTC_INTP4_Stop(void);
+void R_Config_INTC_Create_UserInit(void);
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #endif
