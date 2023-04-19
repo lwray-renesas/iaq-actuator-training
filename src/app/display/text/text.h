@@ -49,7 +49,7 @@ uint8_t Text_put_custom_glyph(const uint16_t x, const uint16_t y, const font_gly
  * @param[in] bg_colour - pointer to background colour of text
  * @return width of character string written in pixels.
  */
-uint16_t Text_put_line(const uint16_t x, const uint16_t y, const char * str, const uint8_t * colour, const uint8_t * bg_colour);
+uint16_t Text_put_line(const uint16_t x, const uint16_t y, const char * const str, const uint8_t * colour, const uint8_t * bg_colour);
 
 /** @brief puts character string on display - process' \n and \r to place new lines on display
  * @param[in] x - x location of character.
@@ -59,13 +59,21 @@ uint16_t Text_put_line(const uint16_t x, const uint16_t y, const char * str, con
  * @param[in] bg_colour - pointer to background colour of text
  * @return width of character string written in pixels.
  */
-uint16_t Text_put_str(const uint16_t x, const uint16_t y, const char * str, const uint8_t * colour, const uint8_t * bg_colour);
+uint16_t Text_put_str(const uint16_t x, const uint16_t y, const char * const str, const uint8_t * colour, const uint8_t * bg_colour);
 
 /** @brief returns size of string in pixels.
  * @param str - input string
  * @return size of string in ;ixels
  */
 uint16_t Text_str_len_px(const char * str);
+
+/** @brief converts a signed integer into a string to maximum significatn figures, prepending zeroes as required.
+ * @param i - signed integer
+ * @param sf - significant figures to place.
+ * @param str - output string
+ * @return size of string excluding null
+ */
+int16_t Text_int_to_str_sf(int16_t i, uint16_t sf, char * const str);
 
 /** @brief converts a signed integer into a string
  * @param i - signed integer

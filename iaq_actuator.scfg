@@ -361,7 +361,7 @@
                     <item id="Level2" input="" vlaue="0"/>
                     <item id="Level3" input="" vlaue="0"/>
                 </option>
-                <option enabled="true" id="TransEnd" selection="Disable">
+                <option enabled="true" id="TransEnd" selection="Enable">
                     <item id="Enable" input="" vlaue="0"/>
                     <item id="Disable" input="" vlaue="0"/>
                 </option>
@@ -928,6 +928,44 @@
                         <item id="transferBlockSize" input="1" vlaue="1"/>
                     </option>
                 </allocatable>
+                <allocatable id="DTCD1">
+                    <option enabled="true" id="transMd" selection="normal">
+                        <item id="normal" input="" vlaue="0"/>
+                        <item id="repeat" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="transferDataSizeSetting" selection="8bits">
+                        <item id="8bits" input="" vlaue="0"/>
+                        <item id="16bits" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="interruptSetting" selection="Disable">
+                        <item id="Disable" input="" vlaue="0"/>
+                        <item id="Enable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="areaSetting" selection="areaSettingDestinationSide">
+                        <item id="areaSettingSourceSide" input="" vlaue="0"/>
+                        <item id="areaSettingDestinationSide" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="sourceAddress" selection="sourceAddress">
+                        <item id="sourceAddress" input="0x0000" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="sourceAddressSel" selection="sourceAddressIncremented">
+                        <item id="sourceAddressFixed" input="" vlaue="0"/>
+                        <item id="sourceAddressIncremented" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="destinationAddress" selection="destinationAddress">
+                        <item id="destinationAddress" input="0x0000" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="destinationAddressSel" selection="destinationAddressFixed">
+                        <item id="destinationAddressFixed" input="" vlaue="0"/>
+                        <item id="destinationAddressIncremented" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="true" id="transferCount" selection="transferCount">
+                        <item id="transferCount" input="1" vlaue="1"/>
+                    </option>
+                    <option enabled="true" id="transferBlockSize" selection="transferBlockSize">
+                        <item id="transferBlockSize" input="1" vlaue="1"/>
+                    </option>
+                </allocatable>
                 <isocket id="OcdTrace" selection="System.tool_ocd_OcdTrace" value="disable"/>
                 <option enabled="true" id="BaseValue" selection="BaseValue">
                     <item id="BaseValue" input="0xFFD00" vlaue="1047808"/>
@@ -977,15 +1015,15 @@
                     <item id="snooz_itm38" input="" vlaue="0"/>
                     <item id="lvd_itm39" input="" vlaue="0"/>
                 </option>
-                <option enabled="true" id="slavechannel1" selection="Disable">
+                <option enabled="true" id="slavechannel1" selection="Enable">
                     <item id="Enable" input="" vlaue="0"/>
                     <item id="Disable" input="" vlaue="0"/>
                 </option>
-                <option enabled="false" id="chain1" selection="Disable">
+                <option enabled="true" id="chain1" selection="Disable">
                     <item id="Enable" input="" vlaue="0"/>
                     <item id="Disable" input="" vlaue="0"/>
                 </option>
-                <option enabled="false" id="actsrc1" selection="intp1_itmx2">
+                <option enabled="true" id="actsrc1" selection="uart0tr_itm12">
                     <item id="intp0_itmx1" input="" vlaue="0"/>
                     <item id="intp1_itmx2" input="" vlaue="0"/>
                     <item id="intp2_itmx3" input="" vlaue="0"/>

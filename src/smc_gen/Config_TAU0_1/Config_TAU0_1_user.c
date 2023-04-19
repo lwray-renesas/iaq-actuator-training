@@ -30,7 +30,7 @@ Includes
 #include "r_cg_userdefine.h"
 #include "Config_TAU0_1.h"
 /* Start user code for include. Do not edit comment generated here */
-#include "main.h"
+#include "../../app/app.h"
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************

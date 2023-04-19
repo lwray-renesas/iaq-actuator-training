@@ -15,7 +15,7 @@
  * - Set_bgcolour(uint8_t const * const bg_colour)
  */
 
-#include "st7735s.h"
+#include "../driver/st7735s.h"
 
 #define Set_pixel(x,y)	{St7735s_set_pixel(x, y);}
 

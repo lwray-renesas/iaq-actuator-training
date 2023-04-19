@@ -56,6 +56,6 @@ void R_Config_TAU0_4_Create_UserInit(void);
 /** @brief function to use a timer to delay ms number of milliseconds.
 * @param ms - number of milliseconds to delay.
 */
-void Delay_ms(uint16_t ms);
+void Hw_delay_ms(uint16_t ms);
 /* End user code. Do not edit comment generated here */
 #endif

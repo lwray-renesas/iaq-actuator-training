@@ -43,6 +43,10 @@ Macro definitions
 #define _09_DTCD0_TRANSFER_BYTE            (0x09U)    /* number of transfers */
 #define _0000_DTCD0_SRC_ADDRESS            (0x0000U)
 #define _FFA6_DTCD0_DEST_ADDRESS           (0xFFA6U)
+#define _01_DTCD1_TRANSFER_BLOCKSIZE       (0x01U)    /* transfer block size */
+#define _01_DTCD1_TRANSFER_BYTE            (0x01U)    /* number of transfers */
+#define _0000_DTCD1_SRC_ADDRESS            (0x0000U)
+#define _0000_DTCD1_DEST_ADDRESS           (0x0000U)
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -63,6 +67,8 @@ Global functions
 void R_Config_DTC_Create(void);
 void R_DTCD0_Start(void);
 void R_DTCD0_Stop(void);
+void R_DTCD1_Start(void);
+void R_DTCD1_Stop(void);
 void R_Config_DTC_Create_UserInit(void);
 /* Start user code for function. Do not edit comment generated here */
 /** @brief Function to start the DTC running for tone generation.

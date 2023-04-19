@@ -8,7 +8,7 @@
 #include "text_driver.h"
 #include "text.h"
 #include "stddef.h"
-#include "display_assert.h"
+#include "../assert/display_assert.h"
 
 static const font_descriptor_t * cur_font_dsc;
 
@@ -148,7 +148,7 @@ uint8_t Text_put_custom_glyph(const uint16_t x, const uint16_t y, const font_gly
 }
 /* END OF FUNCTION*/
 
-uint16_t Text_put_line(const uint16_t x, const uint16_t y, const char * str, const uint8_t * colour, const uint8_t * bg_colour)
+uint16_t Text_put_line(const uint16_t x, const uint16_t y, const char * const str, const uint8_t * colour, const uint8_t * bg_colour)
 {
 	const uint16_t str_len_bytes = Local_str_len(str);
 	const bool set_bg_colour = (NULL != bg_colour);
@@ -170,7 +170,7 @@ uint16_t Text_put_line(const uint16_t x, const uint16_t y, const char * str, con
 }
 /* END OF FUNCTION*/
 
-uint16_t Text_put_str(const uint16_t x, const uint16_t y, const char * str, const uint8_t * colour, const uint8_t * bg_colour)
+uint16_t Text_put_str(const uint16_t x, const uint16_t y, const char * const str, const uint8_t * colour, const uint8_t * bg_colour)
 {
 	const uint16_t str_len_bytes = Local_str_len(str);
 	const bool set_bg_colour = (NULL != bg_colour);
@@ -249,6 +249,40 @@ static void Str_rev(char * const str, uint16_t len)
 		str[j] = str[len - j - 1];
 		str[len - j - 1] = temp;
 	}
+}
+/* END OF FUNCTION*/
+
+int16_t Text_int_to_str_sf(int16_t i, uint16_t sf, char * const str)
+{
+	const bool is_negative = (i < 0);
+	char * l_str = str;
+	uint16_t ui = (is_negative) ? (uint16_t) (i * -1) : (uint16_t) i;
+	uint16_t str_len = 0U;
+	uint16_t l_sf = sf;
+
+	do
+	{
+		*l_str = (ui % 10U) + '0';
+		ui /= 10U;
+
+		++l_str;
+		++str_len;
+		--l_sf;
+	}
+	while ( (ui > 0U) || (l_sf > 0U));
+
+	if(is_negative)
+	{
+		*l_str = '-';
+		++l_str;
+		++str_len;
+	}
+
+	Str_rev(l_str-str_len, str_len);
+
+	*l_str = '\0'; /* NULL Terminate*/
+
+	return str_len;
 }
 /* END OF FUNCTION*/
 

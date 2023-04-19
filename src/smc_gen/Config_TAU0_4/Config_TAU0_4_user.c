@@ -58,7 +58,7 @@ void R_Config_TAU0_4_Create_UserInit(void)
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-void Delay_ms(uint16_t ms)
+void Hw_delay_ms(uint16_t ms)
 {
 	if(ms > 0U)
 	{
