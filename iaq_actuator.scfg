@@ -9,7 +9,7 @@
                 <option id="com.renesas.smc.toolchain.option.buildArtefactType" key="com.renesas.smc.toolchain.option.buildArtefactType.exe"/>
             </toolchain>
         </configuration>
-        <platform id="R7F100GFNxFP"/>
+        <platform id="R7F100GGNxFB"/>
         <option id="board" value="user_board"/>
     </general>
     <tool id="Clock">
@@ -191,6 +191,8 @@
         <Item bank="0" id="TAU0_INTTM03H" priority="3"/>
         <Item bank="0" id="IICA_INTIICA0" priority="3"/>
         <Item bank="0" id="SAU0_INTSR0" priority="3"/>
+        <Item bank="0" id="SAU0_INTCSI01" priority="3"/>
+        <Item bank="0" id="SAU0_INTIIC01" priority="3"/>
         <Item bank="0" id="TAU0_INTTM01" priority="3"/>
         <Item bank="0" id="TAU0_INTTM02" priority="3"/>
         <Item bank="0" id="TAU0_INTTM03" priority="3"/>
@@ -202,6 +204,9 @@
         <Item bank="0" id="TAU0_INTTM05" priority="3"/>
         <Item bank="0" id="TAU0_INTTM06" priority="3"/>
         <Item bank="0" id="TAU0_INTTM07" priority="3"/>
+        <Item bank="0" id="INTC_INTP6" priority="3"/>
+        <Item bank="0" id="INTC_INTP8" priority="3"/>
+        <Item bank="0" id="INTC_INTP9" priority="3"/>
         <Item bank="0" id="-_INTFL" priority="3"/>
         <Item bank="0" id="COMP_INTCMP0" priority="3"/>
         <Item bank="0" id="COMP_INTCMP1" priority="3"/>
@@ -218,17 +223,17 @@
         <Item bank="0" id="UARTA_INTUR1" priority="3"/>
     </tool>
     <tool id="Pins" version="1.0.1.0">
-        <pinItem allocation="32" comments="" direction="O" id="P146" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="14" comments="" direction="IO" id="CCD06" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="24" comments="" direction="IO" id="CCD01" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="25" comments="" direction="IO" id="CCD00" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="17" comments="" direction="O" id="P73" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="2" comments="" direction="None" id="TOOL0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="28" comments="" direction="O" id="P13" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="26" comments="" direction="None" id="PCLBUZ1" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="29" comments="" direction="None" id="SO00" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="31" comments="" direction="None" id="SCK00" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinItem allocation="16" comments="" direction="None" id="INTP4" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="23" comments="" direction="O" id="P146" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="19" comments="" direction="O" id="P13" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="17" comments="" direction="None" id="PCLBUZ1" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="3" comments="" direction="IO" id="CCD06" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="15" comments="" direction="IO" id="CCD01" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="16" comments="" direction="IO" id="CCD00" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="8" comments="" direction="O" id="P73" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="39" comments="" direction="None" id="TOOL0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="20" comments="" direction="None" id="SO00" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="22" comments="" direction="None" id="SCK00" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="5" comments="" direction="None" id="INTP4" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
     </tool>
     <tool id="Summary" version="1.0.0.0">
         <option id="com.renesas.smc.code.path" value="src\smc_gen"/>
@@ -236,7 +241,7 @@
     </tool>
     <tool id="SWComponent" version="1.0.0.0">
         <configuration inuse="true" name="r_bsp">
-            <component description="Dependencies : None&#10;The r_bsp package provides a foundation for code to be built on top of. It provides startup code, iodefines, and MCU information for different boards. There are 2 folders that make up the r_bsp package. The 'mcu' folder contains files that are common to a MCU group. These files provide functionality such as easy register access, CPU functions, and a file named 'mcu_info.h' for each MCU group. The 'mcu_info.h' file has information about the MCU on the board and is configured based on the information given in r_bsp_config.h. The information in 'mcu_info.h' is used to help configure Renesas middleware that uses the r_bsp package. The 'board' folder has a folder with startup code for each supported board.  Which MCU and board is chosen is decided by the settings in 'platform.h'. The user can choose which board they are using by uncommenting the include path that applies to their board. For example, if you are using the RSK+RX64M then you would uncomment the #include &quot;./board/generic_rx64m/r_bsp.h&quot; include path. Users are encouraged to add their own boards to the 'board' directory. BSPs are configured by using the r_bsp_config.h file. Each board will have a reference configuration file named r_bsp_config_reference.h. The user should copy this file to their project, rename it to r_bsp_config.h, and use the options inside the file to configure the BSP for their project." detailDescription="Board Support Packages. - v1.30" display="r_bsp" id="r_bsp1.30" version="1.30">
+            <component description="Dependencies : None&#10;The r_bsp package provides a foundation for code to be built on top of. It provides startup code, iodefines, and MCU information for different boards. There are 2 folders that make up the r_bsp package. The 'mcu' folder contains files that are common to a MCU group. These files provide functionality such as easy register access, CPU functions, and a file named 'mcu_info.h' for each MCU group. The 'mcu_info.h' file has information about the MCU on the board and is configured based on the information given in r_bsp_config.h. The information in 'mcu_info.h' is used to help configure Renesas middleware that uses the r_bsp package. The 'board' folder has a folder with startup code for each supported board.  Which MCU and board is chosen is decided by the settings in 'platform.h'. The user can choose which board they are using by uncommenting the include path that applies to their board. For example, if you are using the RSK+RX64M then you would uncomment the #include &quot;./board/generic_rx64m/r_bsp.h&quot; include path. Users are encouraged to add their own boards to the 'board' directory. BSPs are configured by using the r_bsp_config.h file. Each board will have a reference configuration file named r_bsp_config_reference.h. The user should copy this file to their project, rename it to r_bsp_config.h, and use the options inside the file to configure the BSP for their project." detailDescription="Board Support Packages. - v1.60" display="r_bsp" id="r_bsp1.60" version="1.60">
                 <gridItem id="BSP_CFG_STARTUP_DISABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_INVALID_MEMORY_ACCESS_DETECTION_ENABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_RAM_GUARD_FUNC" selectedIndex="0"/>
@@ -245,11 +250,11 @@
                 <gridItem id="BSP_CFG_CHIP_STATE_CTRL_GUARD" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_DATA_FLASH_ACCESS_ENABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_CONFIGURATOR_SELECT" selectedIndex="1"/>
-                <gridItem id="BSP_CFG_CLOCK_OPERATION_API_FUNCTIONS_DISABLE" selectedIndex="0"/>
+                <gridItem id="BSP_CFG_CLOCK_OPERATION_API_FUNCTIONS_DISABLE" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_GET_FREQ_API_FUNCTIONS_DISABLE" selectedIndex="0"/>
-                <gridItem id="BSP_CFG_SET_CLOCK_SOURCE_API_FUNCTIONS_DISABLE" selectedIndex="0"/>
-                <gridItem id="BSP_CFG_CHANGE_CLOCK_SETTING_API_FUNCTIONS_DISABLE" selectedIndex="0"/>
-                <gridItem id="BSP_CFG_SOFTWARE_DELAY_API_FUNCTIONS_DISABLE" selectedIndex="0"/>
+                <gridItem id="BSP_CFG_SET_CLOCK_SOURCE_API_FUNCTIONS_DISABLE" selectedIndex="1"/>
+                <gridItem id="BSP_CFG_CHANGE_CLOCK_SETTING_API_FUNCTIONS_DISABLE" selectedIndex="1"/>
+                <gridItem id="BSP_CFG_SOFTWARE_DELAY_API_FUNCTIONS_DISABLE" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_USER_WARM_START_CALLBACK_PRE_INITC_ENABLED" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_WARM_START_PRE_C_FUNCTION" selectedIndex="my_sw_warmstart_prec_function"/>
@@ -262,7 +267,7 @@
             <source description="RL78 Software Integration System" display="RL78 Software Integration System" id="com.renesas.smc.tools.swcomponent.rl78.sis.source"/>
             <source description="RL78 Software Integration System" display="RL78 Software Integration System" id="com.renesas.smc.tools.swcomponent.rl78.sis.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="d9952365-231d-4aa1-9302-603f012bf6ad" inuse="true" name="Config_PCLBUZ1">
+        <configuration apiMode="FULL_API" id="587fa023-329b-454e-bfb9-26b000c33010" inuse="true" name="Config_PCLBUZ1">
             <allocatable id="PCLBUZ1">
                 <isocket id="vddRangeMode" selection="Clock.tool_clock_vddRangeMode" value="hsmainmode"/>
                 <isocket id="evddRange" selection="Clock.tool_clock_evddRange" value="1.8~5.5"/>
@@ -287,13 +292,13 @@
                     <item id="FSXP7" input="" vlaue="0"/>
                 </option>
             </allocatable>
-            <component description="The clock output controller is intended for clock output for supply to peripheral ICs. Buzzer output is a function to output a square wave of buzzer frequency." detailDescription="" display="Clock Output /Buzzer Output Controller" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.pclbuz" version="1.2.0"/>
+            <component description="The clock output controller is intended for clock output for supply to peripheral ICs. Buzzer output is a function to output a square wave of buzzer frequency." detailDescription="" display="Clock Output /Buzzer Output Controller" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.pclbuz" version="1.4.0"/>
             <allocator channelLevel0="1" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="PCLBUZ1 clock output/buzzer output controller" display="PCLBUZ1" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.comparator.pclbuz1" type="">
                 <context/>
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="fc0653bc-2881-4f39-aa1d-34d976c0ed7f" inuse="true" name="Config_CSI00">
+        <configuration apiMode="FULL_API" id="2a6d8954-7535-431d-9201-3243e33ef660" inuse="true" name="Config_CSI00">
             <allocatable id="CSI00">
                 <osocket id="SendSetting" value="SingleTransfer"/>
                 <osocket id="BothSetting" value="SingleTransfer"/>
@@ -375,7 +380,7 @@
                     <item id="BothMode" input="" vlaue="0"/>
                 </option>
             </allocatable>
-            <component description="SPI (CSI) is communication function that three-wire serial data transfer with clock synchronous." detailDescription="" display="SPI (CSI) Communication" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.csi" version="1.2.0"/>
+            <component description="SPI (CSI) is communication function that three-wire serial data transfer with clock synchronous." detailDescription="" display="SPI (CSI) Communication" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.csi" version="1.4.0"/>
             <allocator channelLevel0="0" channelLevel1="0" channelLevel2="00" channelLevel3="" channelLevel4="" channelLevel5="" description="SAU channel 0, CSI channel 00" display="CSI00" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.csi.csi00" type="CSI">
                 <context>
                     <option enabled="true" id="ModeSetting" selection="TransMode">
@@ -387,7 +392,7 @@
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="b2e85da3-036e-4efa-b1dc-8a84cad14a1d" inuse="true" name="Config_PORT">
+        <configuration apiMode="FULL_API" id="6593dc50-ec73-492e-b234-56a4c738b3b7" inuse="true" name="Config_PORT">
             <allocatable id="Port">
                 <allocatable id="PORT0_Check">
                     <option enabled="true" id="PortnEnable" selection="Disable">
@@ -824,6 +829,44 @@
                             <item id="Output1Unuse" input="" vlaue="0"/>
                         </option>
                     </allocatable>
+                    <allocatable id="P74">
+                        <option enabled="true" id="UseStatus" selection="Unuse">
+                            <item id="Unuse" input="" vlaue="0"/>
+                            <item id="In" input="" vlaue="0"/>
+                            <item id="Out" input="" vlaue="0"/>
+                        </option>
+                        <option enabled="true" id="Pullup" selection="PullupUnuse">
+                            <item id="PullupUse" input="" vlaue="0"/>
+                            <item id="PullupUnuse" input="" vlaue="0"/>
+                        </option>
+                        <option enabled="true" id="Inputbuffer" selection="InputbufferUnuse">
+                            <item id="InputbufferUse" input="" vlaue="0"/>
+                            <item id="InputbufferUnuse" input="" vlaue="0"/>
+                        </option>
+                        <option enabled="true" id="Nch" selection="NchUnuse">
+                            <item id="NchUse" input="" vlaue="0"/>
+                            <item id="NchUnuse" input="" vlaue="0"/>
+                        </option>
+                        <option enabled="false" id="Output1" selection="Output1Unuse">
+                            <item id="Output1Use" input="" vlaue="0"/>
+                            <item id="Output1Unuse" input="" vlaue="0"/>
+                        </option>
+                    </allocatable>
+                    <allocatable id="P75">
+                        <option enabled="true" id="UseStatus" selection="Unuse">
+                            <item id="Unuse" input="" vlaue="0"/>
+                            <item id="In" input="" vlaue="0"/>
+                            <item id="Out" input="" vlaue="0"/>
+                        </option>
+                        <option enabled="true" id="Pullup" selection="PullupUnuse">
+                            <item id="PullupUse" input="" vlaue="0"/>
+                            <item id="PullupUnuse" input="" vlaue="0"/>
+                        </option>
+                        <option enabled="false" id="Output1" selection="Output1Unuse">
+                            <item id="Output1Use" input="" vlaue="0"/>
+                            <item id="Output1Unuse" input="" vlaue="0"/>
+                        </option>
+                    </allocatable>
                 </allocatable>
                 <allocatable id="PORT12_Check">
                     <option enabled="true" id="PortnEnable" selection="Disable">
@@ -844,6 +887,21 @@
                     </option>
                 </allocatable>
                 <allocatable id="PORT14_Chan">
+                    <allocatable id="P140">
+                        <option enabled="true" id="UseStatus" selection="Unuse">
+                            <item id="Unuse" input="" vlaue="0"/>
+                            <item id="In" input="" vlaue="0"/>
+                            <item id="Out" input="" vlaue="0"/>
+                        </option>
+                        <option enabled="true" id="Pullup" selection="PullupUnuse">
+                            <item id="PullupUse" input="" vlaue="0"/>
+                            <item id="PullupUnuse" input="" vlaue="0"/>
+                        </option>
+                        <option enabled="false" id="Output1" selection="Output1Unuse">
+                            <item id="Output1Use" input="" vlaue="0"/>
+                            <item id="Output1Unuse" input="" vlaue="0"/>
+                        </option>
+                    </allocatable>
                     <allocatable id="P146">
                         <option enabled="true" id="UseStatus" selection="Out">
                             <item id="Unuse" input="" vlaue="0"/>
@@ -882,13 +940,13 @@
                     <item id="ReadDigitalOutputLevel" input="" vlaue="0"/>
                 </option>
             </allocatable>
-            <component description="The ports is function that config each pin to be used as general input/output pin or input/output function of internal IP." detailDescription="" display="Ports" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.port" version="1.2.0"/>
+            <component description="The ports is function that config each pin to be used as general input/output pin or input/output function of internal IP." detailDescription="" display="Ports" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.port" version="1.4.0"/>
             <allocator channelLevel0="" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Input output configuration of PORT" display="PORT" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.port.rl78g23.PORT" type="">
                 <context/>
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="ab2f841c-9380-43c7-ba77-239b00903d0f" inuse="true" name="Config_DTC">
+        <configuration apiMode="FULL_API" id="c48b4005-9b6f-41f9-b786-43ad36cee4e4" inuse="true" name="Config_DTC">
             <allocatable id="DTC">
                 <allocatable id="DTCD0">
                     <option enabled="true" id="transMd" selection="normal">
@@ -985,6 +1043,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1030,6 +1089,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1075,6 +1135,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1120,6 +1181,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1165,6 +1227,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1210,6 +1273,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1255,6 +1319,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1300,6 +1365,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1345,6 +1411,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1390,6 +1457,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1435,6 +1503,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1480,6 +1549,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1525,6 +1595,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1570,6 +1641,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1615,6 +1687,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1660,6 +1733,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1705,6 +1779,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1750,6 +1825,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1795,6 +1871,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1840,6 +1917,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1885,6 +1963,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1930,6 +2009,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -1975,6 +2055,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -2016,6 +2097,7 @@
                     <item id="intp3_itmx4" input="" vlaue="0"/>
                     <item id="intp4_itmx5" input="" vlaue="0"/>
                     <item id="intp5_itmx6" input="" vlaue="0"/>
+                    <item id="intp6_itmx7" input="" vlaue="0"/>
                     <item id="key_itmx9" input="" vlaue="0"/>
                     <item id="ad_itm10" input="" vlaue="0"/>
                     <item id="uart0re_itm11" input="" vlaue="0"/>
@@ -2047,13 +2129,13 @@
                     <item id="lvd_itm39" input="" vlaue="0"/>
                 </option>
             </allocatable>
-            <component description="This software component provides configurations for DTC to perform data transfers." detailDescription="" display="Data Transfer Controller" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.dtc" version="1.1.1"/>
+            <component description="This software component provides configurations for DTC to perform data transfers." detailDescription="" display="Data Transfer Controller" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.dtc" version="1.3.0"/>
             <allocator channelLevel0="" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="DTC" display="DTC" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.dtc.dtcd0" type="DTC">
                 <context/>
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="7df2fe99-7857-4de1-8a4c-60ce9f781809" inuse="true" name="Config_TAU0_6">
+        <configuration apiMode="FULL_API" id="2f56e27b-41d9-4549-9237-3b27a4dc152a" inuse="true" name="Config_TAU0_6">
             <allocatable id="TAU06">
                 <isocket id="CountingClock" selection="Clock.tool_clock_fCLK" value="3.2E7"/>
                 <option enabled="true" id="OperationClock" selection="CK0">
@@ -2108,7 +2190,7 @@
                     <item id="32bitCountMode" input="" vlaue="0"/>
                 </option>
             </allocatable>
-            <component description="The interval timer function is timer that generating timer interrupt at regular intervals. It also can measure the interval of the input signals." detailDescription="" display="Interval Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intervaltimer" version="1.2.0"/>
+            <component description="The interval timer function is timer that generating timer interrupt at regular intervals. It also can measure the interval of the input signals." detailDescription="" display="Interval Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intervaltimer" version="1.4.0"/>
             <allocator channelLevel0="0" channelLevel1="6" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Timer array unit 0 channel 6" display="TAU0_6" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intervaltimer.g23.tau06" type="TAU">
                 <context>
                     <option enabled="true" id="FilterMode" selection="16bitCountMode">
@@ -2121,7 +2203,7 @@
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="25dc5dd6-3fd1-4297-9319-3f3d9eda79e3" inuse="true" name="Config_TAU0_4">
+        <configuration apiMode="FULL_API" id="bd9dfddb-e599-4fc4-9662-79f279ae0509" inuse="true" name="Config_TAU0_4">
             <allocatable id="TAU04">
                 <isocket id="CountingClock" selection="Clock.tool_clock_fCLK" value="3.2E7"/>
                 <option enabled="true" id="OperationClock" selection="CK1">
@@ -2176,7 +2258,7 @@
                     <item id="32bitCountMode" input="" vlaue="0"/>
                 </option>
             </allocatable>
-            <component description="The interval timer function is timer that generating timer interrupt at regular intervals. It also can measure the interval of the input signals." detailDescription="" display="Interval Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intervaltimer" version="1.2.0"/>
+            <component description="The interval timer function is timer that generating timer interrupt at regular intervals. It also can measure the interval of the input signals." detailDescription="" display="Interval Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intervaltimer" version="1.4.0"/>
             <allocator channelLevel0="0" channelLevel1="4" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Timer array unit 0 channel 4" display="TAU0_4" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intervaltimer.g23.tau04" type="TAU">
                 <context>
                     <option enabled="true" id="FilterMode" selection="16bitCountMode">
@@ -2189,7 +2271,7 @@
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="7f02ce59-e547-4c49-9a63-09ca801bfbee" inuse="true" name="Config_TAU0_1">
+        <configuration apiMode="FULL_API" id="633189b8-887c-4d77-9274-0a235833fca7" inuse="true" name="Config_TAU0_1">
             <allocatable id="TAU01">
                 <isocket id="fCLK" selection="Clock.tool_clock_fCLK" value="3.2E7"/>
                 <option enabled="true" id="OperationClock" selection="CK1">
@@ -2247,13 +2329,13 @@
                     <item id="Level3" input="" vlaue="0"/>
                 </option>
             </allocatable>
-            <component description="The external event count function is timer that generate interrupt when a specific number of valid input edges are detected." detailDescription="" display="External Event Counter" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.extevtcount" version="1.2.0"/>
+            <component description="The external event count function is timer that generate interrupt when a specific number of valid input edges are detected." detailDescription="" display="External Event Counter" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.extevtcount" version="1.4.0"/>
             <allocator channelLevel0="0" channelLevel1="1" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Timer array unit 0 channel 1" display="TAU0_1" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.extevtcount.g23.tau01" type="TAU">
                 <context/>
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="ef2da07c-7344-4c87-8298-dcc3ab41cb38" inuse="true" name="Config_TAU0_0">
+        <configuration apiMode="FULL_API" id="ff073e86-7dd5-4ad4-a0d0-d1c5a5993623" inuse="true" name="Config_TAU0_0">
             <allocatable id="TAU00">
                 <isocket id="fCLK" selection="Clock.tool_clock_fCLK" value="3.2E7"/>
                 <option enabled="true" id="OperationClock" selection="CK1">
@@ -2305,13 +2387,13 @@
                     <item id="Level3" input="" vlaue="0"/>
                 </option>
             </allocatable>
-            <component description="The external event count function is timer that generate interrupt when a specific number of valid input edges are detected." detailDescription="" display="External Event Counter" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.extevtcount" version="1.2.0"/>
+            <component description="The external event count function is timer that generate interrupt when a specific number of valid input edges are detected." detailDescription="" display="External Event Counter" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.extevtcount" version="1.4.0"/>
             <allocator channelLevel0="0" channelLevel1="0" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Timer array unit 0 channel 0" display="TAU0_0" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.extevtcount.g23.tau00" type="TAU">
                 <context/>
             </allocator>
             <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
         </configuration>
-        <configuration apiMode="FULL_API" id="d2d27762-c0bd-4a81-a3aa-b18a1388bd1a" inuse="true" name="Config_INTC">
+        <configuration apiMode="FULL_API" id="35578d22-3870-4847-8562-faa629ad16f8" inuse="true" name="Config_INTC">
             <allocatable id="INTC">
                 <allocatable id="INTP0">
                     <option enabled="true" id="enableINTP" selection="disable">
@@ -2415,8 +2497,59 @@
                         <item id="Level3" input="" vlaue="0"/>
                     </option>
                 </allocatable>
+                <allocatable id="INTP6">
+                    <option enabled="true" id="enableINTP" selection="disable">
+                        <item id="enable" input="" vlaue="0"/>
+                        <item id="disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="validedge" selection="falling">
+                        <item id="falling" input="" vlaue="0"/>
+                        <item id="rising" input="" vlaue="0"/>
+                        <item id="both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="intpPriority" selection="Level3">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="INTP8">
+                    <option enabled="true" id="enableINTP" selection="disable">
+                        <item id="enable" input="" vlaue="0"/>
+                        <item id="disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="validedge" selection="falling">
+                        <item id="falling" input="" vlaue="0"/>
+                        <item id="rising" input="" vlaue="0"/>
+                        <item id="both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="intpPriority" selection="Level3">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
+                <allocatable id="INTP9">
+                    <option enabled="true" id="enableINTP" selection="disable">
+                        <item id="enable" input="" vlaue="0"/>
+                        <item id="disable" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="validedge" selection="falling">
+                        <item id="falling" input="" vlaue="0"/>
+                        <item id="rising" input="" vlaue="0"/>
+                        <item id="both" input="" vlaue="0"/>
+                    </option>
+                    <option enabled="false" id="intpPriority" selection="Level3">
+                        <item id="Level0" input="" vlaue="0"/>
+                        <item id="Level1" input="" vlaue="0"/>
+                        <item id="Level2" input="" vlaue="0"/>
+                        <item id="Level3" input="" vlaue="0"/>
+                    </option>
+                </allocatable>
             </allocatable>
-            <component description="The interrupt controller (INTC) is a function that sets request such as external pin interrupts." detailDescription="" display="Interrupt Controller" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intp" version="1.2.0"/>
+            <component description="The interrupt controller (INTC) is a function that sets request such as external pin interrupts." detailDescription="" display="Interrupt Controller" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intp" version="1.4.0"/>
             <allocator channelLevel0="" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Interrupt Controller" display="INTC" id="com.renesas.smc.tools.swcomponent.codegenerator.rl78.intp" type="">
                 <context/>
             </allocator>

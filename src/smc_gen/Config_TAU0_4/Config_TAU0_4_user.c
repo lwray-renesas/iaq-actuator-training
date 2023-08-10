@@ -14,13 +14,13 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : Config_TAU0_4_user.c
-* Component Version: 1.2.0
-* Device(s)        : R7F100GFNxFP
+* Component Version: 1.4.0
+* Device(s)        : R7F100GGNxFB
 * Description      : This file implements device driver for Config_TAU0_4.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
@@ -53,7 +53,6 @@ Global variables and functions
 void R_Config_TAU0_4_Create_UserInit(void)
 {
     /* Start user code for user init. Do not edit comment generated here */
-
     /* End user code. Do not edit comment generated here */
 }
 

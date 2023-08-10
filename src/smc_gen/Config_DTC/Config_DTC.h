@@ -14,13 +14,13 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : Config_DTC.h
-* Component Version: 1.1.1
-* Device(s)        : R7F100GFNxFP
+* Component Version: 1.3.0
+* Device(s)        : R7F100GGNxFB
 * Description      : This file implements device driver for Config_DTC.
 ***********************************************************************************************************************/
 
@@ -71,9 +71,5 @@ void R_DTCD1_Start(void);
 void R_DTCD1_Stop(void);
 void R_Config_DTC_Create_UserInit(void);
 /* Start user code for function. Do not edit comment generated here */
-/** @brief Function to start the DTC running for tone generation.
- * @param tone - pointer to near data (16bit address) to set the source address for DTC0 transfers.
- */
- void Start_dtc(__near uint8_t * tone);
 /* End user code. Do not edit comment generated here */
 #endif

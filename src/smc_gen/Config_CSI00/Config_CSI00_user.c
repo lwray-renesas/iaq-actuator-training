@@ -14,13 +14,13 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : Config_CSI00_user.c
-* Component Version: 1.2.0
-* Device(s)        : R7F100GFNxFP
+* Component Version: 1.4.0
+* Device(s)        : R7F100GGNxFB
 * Description      : This file implements device driver for Config_CSI00.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
@@ -68,7 +68,7 @@ static void Simple_polling_send(const uint8_t * const tx_buf, uint16_t tx_num);
 void R_Config_CSI00_Create_UserInit(void)
 {
     /* Start user code for user init. Do not edit comment generated here */
-    /* End user code. Do not edit comment generated here */
+	/* End user code. Do not edit comment generated here */
 }
 
 /***********************************************************************************************************************
@@ -81,7 +81,7 @@ static void r_Config_CSI00_callback_sendend(void)
 {
     /* Start user code for r_Config_CSI00_callback_sendend. Do not edit comment generated here */
 	tx_done = true;
-    /* End user code. Do not edit comment generated here */
+	/* End user code. Do not edit comment generated here */
 }
 
 /***********************************************************************************************************************

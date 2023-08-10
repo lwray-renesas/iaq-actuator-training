@@ -14,13 +14,13 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : Config_DTC.c
-* Component Version: 1.1.1
-* Device(s)        : R7F100GFNxFP
+* Component Version: 1.3.0
+* Device(s)        : R7F100GGNxFB
 * Description      : This file implements device driver for Config_DTC.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
@@ -137,13 +137,4 @@ void R_DTCD1_Stop(void)
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-
-void Start_dtc(__near uint8_t * tone)
-{
-	dtc_controldata_0.dtcct = _09_DTCD0_TRANSFER_BYTE;
-	dtc_controldata_0.dtsar = (uint16_t)tone;
-	DTCEN3 |= _04_DTC_TAU06_ACTIVATION_ENABLE;
-}
-/* END OF FUNCTION*/
-
 /* End user code. Do not edit comment generated here */

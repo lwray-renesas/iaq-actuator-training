@@ -20,8 +20,8 @@
         <Setting id="Series" value="RL78G2x"/>
         <Setting id="Group" value="RL78G23"/>
         <Setting id="Board" value="Custom User Board"/>
-        <Setting id="PartNo" value="R7F100GFNxFP"/>
-        <Setting id="PinCount" value="44"/>
+        <Setting id="PartNo" value="R7F100GGNxFB"/>
+        <Setting id="PinCount" value="48"/>
     </Segment>
     <Segment id="Clock">
         <Setting id="FSXL" value="32.768"/>
